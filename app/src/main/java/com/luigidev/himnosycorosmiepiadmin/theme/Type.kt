@@ -1,4 +1,4 @@
-package com.luigidev.himnosycorosmiepiadmin.ui.theme
+package com.luigidev.himnosycorosmiepiadmin.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

@@ -1,4 +1,4 @@
-package com.luigidev.himnosycorosmiepiadmin.ui.theme
+package com.luigidev.himnosycorosmiepiadmin.theme
 
 import android.app.Activity
 import android.os.Build

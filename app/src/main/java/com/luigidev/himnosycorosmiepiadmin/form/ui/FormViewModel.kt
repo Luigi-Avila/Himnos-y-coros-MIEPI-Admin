@@ -5,7 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
 import com.luigidev.himnosycorosmiepiadmin.core.ResultAPI
+import com.luigidev.himnosycorosmiepiadmin.core.Routes
 import com.luigidev.himnosycorosmiepiadmin.form.domain.models.Choir
 import com.luigidev.himnosycorosmiepiadmin.form.domain.state.UIStateForm
 import com.luigidev.himnosycorosmiepiadmin.form.domain.usecase.UploadChoirUseCase
@@ -36,7 +38,15 @@ class FormViewModel: ViewModel() {
                 }
             }
         }
+    }
 
+    fun goToHome(navigationController: NavHostController) {
+        navigationController.navigate(Routes.HomeScreen.route)
+        _resultState.value = UIStateForm.FillOut
+    }
+
+    fun addNew(){
+        _resultState.value = UIStateForm.FillOut
     }
 
 

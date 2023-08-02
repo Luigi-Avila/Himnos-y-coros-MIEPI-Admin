@@ -8,8 +8,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.luigidev.himnosycorosmiepiadmin.core.Routes
 import com.luigidev.himnosycorosmiepiadmin.form.ui.FormScreen
 import com.luigidev.himnosycorosmiepiadmin.form.ui.FormViewModel
+import com.luigidev.himnosycorosmiepiadmin.home.ui.HomeScreen
 import com.luigidev.himnosycorosmiepiadmin.theme.HimnosYCorosMIEPIAdminTheme
 
 class MainActivity : ComponentActivity() {
@@ -25,7 +30,15 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                   FormScreen(formViewModel)
+                    val navigationController = rememberNavController()
+                    NavHost(
+                        navController = navigationController,
+                        startDestination = Routes.HomeScreen.route
+                    ) {
+                        composable(Routes.FormScreen.route) { FormScreen(formViewModel, navigationController) }
+                        composable(Routes.HomeScreen.route) { HomeScreen(navigationController) }
+                    }
+
                 }
             }
         }

@@ -4,18 +4,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavHostController
+import com.luigidev.himnosycorosmiepiadmin.form.ui.FormViewModel
 
-@Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun FormSuccessState() {
+fun FormSuccessState(formViewModel: FormViewModel, navigationController: NavHostController) {
     Dialog(onDismissRequest = {} ) {
         Row() {
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = { formViewModel.goToHome(navigationController) }) {
                 Text(text = "Go to home")
             }
-            Button(onClick = {  }) {
+            Button(onClick = { formViewModel.addNew()  }) {
                 Text(text = "Add new")
             }
         }

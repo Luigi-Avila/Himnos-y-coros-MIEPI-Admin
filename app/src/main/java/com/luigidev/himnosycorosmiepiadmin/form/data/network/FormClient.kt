@@ -3,6 +3,7 @@ package com.luigidev.himnosycorosmiepiadmin.form.data.network
 import android.util.Log
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.luigidev.himnosycorosmiepiadmin.core.FirebaseCollections
 import com.luigidev.himnosycorosmiepiadmin.core.ResultAPI
 import com.luigidev.himnosycorosmiepiadmin.form.domain.models.Choir
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +18,7 @@ class FormClient {
 
     suspend fun uploadChoir(choir: Choir): ResultAPI<String> {
         val db = Firebase.firestore
-        val reference = db.collection("choirs").document()
+        val reference = db.collection(FirebaseCollections.CHOIRS.toString()).document()
         return withContext(Dispatchers.IO){
             try {
                 val result = reference.set(choir).await()

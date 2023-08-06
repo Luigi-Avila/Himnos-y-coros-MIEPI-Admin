@@ -1,21 +1,35 @@
 package com.luigidev.himnosycorosmiepiadmin.home.ui
 
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.painterResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.luigidev.himnosycorosmiepiadmin.R
-import com.luigidev.himnosycorosmiepiadmin.core.Routes
+import com.luigidev.himnosycorosmiepiadmin.home.domain.models.Choir
+import com.luigidev.himnosycorosmiepiadmin.home.domain.state.HomeUIState
+import com.luigidev.himnosycorosmiepiadmin.home.ui.states.HomeSuccess
 
 @Composable
 fun HomeScreen(navigationController: NavHostController) {
 
+    val homeViewModel: HomeViewModel = viewModel()
 
-    Text(text = "Home screen")
+    when (homeViewModel.homeUIState) {
+        is HomeUIState.Error -> {
+            Text(text = "Error")
+        }
 
-    FloatingActionButton(onClick = { navigationController.navigate(Routes.FormScreen.route) }) {
-        Icon(painter = painterResource(id = R.drawable.ic_add), contentDescription = "add icon")
+        HomeUIState.Loading -> {
+            Text(text = "Loading")
+        }
+
+        is HomeUIState.Success -> {
+            HomeSuccess(
+                navigationController = navigationController,
+                homeViewModel = homeViewModel,
+                (homeViewModel.homeUIState as HomeUIState.Success<List<Choir?>>).data
+            )
+        }
     }
+
+
 }

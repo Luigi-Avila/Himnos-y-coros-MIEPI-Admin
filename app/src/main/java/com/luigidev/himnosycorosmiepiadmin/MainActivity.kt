@@ -15,11 +15,13 @@ import com.luigidev.himnosycorosmiepiadmin.core.Routes
 import com.luigidev.himnosycorosmiepiadmin.form.ui.FormScreen
 import com.luigidev.himnosycorosmiepiadmin.form.ui.FormViewModel
 import com.luigidev.himnosycorosmiepiadmin.home.ui.HomeScreen
+import com.luigidev.himnosycorosmiepiadmin.home.ui.HomeViewModel
 import com.luigidev.himnosycorosmiepiadmin.theme.HimnosYCorosMIEPIAdminTheme
 
 class MainActivity : ComponentActivity() {
 
     private val formViewModel: FormViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -25,7 +25,6 @@ fun HomeScreen(navigationController: NavHostController) {
         is HomeUIState.Success -> {
             HomeSuccess(
                 navigationController = navigationController,
-                homeViewModel = homeViewModel,
                 (homeViewModel.homeUIState as HomeUIState.Success<List<Choir?>>).data
             )
         }

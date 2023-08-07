@@ -3,7 +3,6 @@ package com.luigidev.himnosycorosmiepiadmin
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -13,15 +12,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.luigidev.himnosycorosmiepiadmin.core.Routes
 import com.luigidev.himnosycorosmiepiadmin.form.ui.FormScreen
-import com.luigidev.himnosycorosmiepiadmin.form.ui.FormViewModel
 import com.luigidev.himnosycorosmiepiadmin.home.ui.HomeScreen
-import com.luigidev.himnosycorosmiepiadmin.home.ui.HomeViewModel
 import com.luigidev.himnosycorosmiepiadmin.theme.HimnosYCorosMIEPIAdminTheme
 
 class MainActivity : ComponentActivity() {
-
-    private val formViewModel: FormViewModel by viewModels()
-    private val homeViewModel: HomeViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +31,7 @@ class MainActivity : ComponentActivity() {
                         navController = navigationController,
                         startDestination = Routes.HomeScreen.route
                     ) {
-                        composable(Routes.FormScreen.route) { FormScreen(formViewModel, navigationController) }
+                        composable(Routes.FormScreen.route) { FormScreen(navigationController) }
                         composable(Routes.HomeScreen.route) { HomeScreen(navigationController) }
                     }
 

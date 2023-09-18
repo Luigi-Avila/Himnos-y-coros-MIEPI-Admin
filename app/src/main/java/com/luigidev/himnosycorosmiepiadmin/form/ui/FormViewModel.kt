@@ -1,5 +1,8 @@
 package com.luigidev.himnosycorosmiepiadmin.form.ui
 
+import android.content.Context
+import android.util.Log
+import android.view.View
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -14,9 +17,14 @@ import com.luigidev.himnosycorosmiepiadmin.core.Routes
 import com.luigidev.himnosycorosmiepiadmin.form.domain.models.Choir
 import com.luigidev.himnosycorosmiepiadmin.form.domain.state.FormUIState
 import com.luigidev.himnosycorosmiepiadmin.form.domain.usecase.UploadChoirUseCase
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.regex.Pattern
 
 class FormViewModel : ViewModel() {
 
@@ -45,7 +53,27 @@ class FormViewModel : ViewModel() {
 
     private var isSubmitted: Boolean by mutableStateOf(false)
 
-    private fun formatText(){
+    internal var mVideoUrl: String by mutableStateOf("")
+        private set
+
+    internal var isVideoUrlInvalid: Boolean by mutableStateOf(false)
+        private set
+
+    internal var mVideoId: String by mutableStateOf("")
+        private set
+
+    internal var isVideoPreviewOnScreen: Boolean by mutableStateOf(false)
+        private set
+
+    internal var isThumbnailOnScreen: Boolean by mutableStateOf(false)
+        private set
+    internal var mThumbnailURL: String by mutableStateOf("")
+        private set
+
+    internal var isThumbnailUrlInvalid: Boolean by mutableStateOf(false)
+        private set
+
+    private fun formatText() {
         mTitle = mTitle.trim()
         mLyrics = mLyrics.trim()
         mNumber = mNumber.trim()
@@ -114,5 +142,68 @@ class FormViewModel : ViewModel() {
         isNumberInvalid =
             !(mNumber.isNotEmpty() && mNumber.isDigitsOnly() && mNumber.toInt() > 0)
     }
+
+    fun onChangeVideoUrl(videoUrl: String) {
+        mVideoUrl = videoUrl
+    }
+
+    fun onChangeThumbnail(thumbnailUrl: String){
+        mThumbnailURL = thumbnailUrl
+    }
+
+    fun previewVideo() {
+        val result = getYoutubeVideoId(mVideoUrl)
+        Log.i("Valor result", "$result")
+        if (result != null) {
+            mVideoId = result
+            isVideoPreviewOnScreen = true
+            isVideoUrlInvalid = false
+        } else {
+            isVideoUrlInvalid = true
+            isVideoPreviewOnScreen = false
+        }
+    }
+
+    fun setPreviewThumbnail(){
+        isThumbnailOnScreen = true
+        isThumbnailUrlInvalid = false
+    }
+
+    private fun getYoutubeVideoId(url: String): String? {
+        val regex =
+            "(?<=watch\\?v=|/videos/|embed/|youtu\\.be/|/v/|/e/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%2F|youtu\\.be%2F|%2Fv%2F)[^#&?\\n]*"
+        val pattern = Pattern.compile(regex)
+        val matcher = pattern.matcher(url)
+
+        return if (matcher.find()) {
+            matcher.group()
+        } else {
+            null
+        }
+    }
+
+
+    fun factoryVideo(context: Context, videoId: String): View {
+        val view = YouTubePlayerView(context)
+        view.addYouTubePlayerListener(
+            object : AbstractYouTubePlayerListener() {
+                override fun onReady(youTubePlayer: YouTubePlayer) {
+                    super.onReady(youTubePlayer)
+                    youTubePlayer.loadVideo(videoId = videoId, 0f)
+                }
+
+                override fun onError(
+                    youTubePlayer: YouTubePlayer,
+                    error: PlayerConstants.PlayerError
+                ) {
+                    super.onError(youTubePlayer, error)
+                    isVideoUrlInvalid = true
+                }
+
+            }
+        )
+        return view
+    }
+
 
 }

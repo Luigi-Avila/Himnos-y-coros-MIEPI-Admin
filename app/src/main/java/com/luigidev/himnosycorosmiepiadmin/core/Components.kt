@@ -1,6 +1,7 @@
 package com.luigidev.himnosycorosmiepiadmin.core
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -9,15 +10,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import coil.compose.AsyncImage
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun TextFieldForm(
+    modifier: Modifier = Modifier,
     label: String,
     textValue: String,
+    showSupportText: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     isInvalid: Boolean = false,
     supportText: String = "",
@@ -25,26 +30,34 @@ fun TextFieldForm(
     oneLine: Boolean = false,
     maxLines: Int = Int.MAX_VALUE,
     trailingIcon: ImageVector? = null,
+    keyboardController: SoftwareKeyboardController? = null,
     onTextChanged: (String) -> Unit,
-    onClickTrailingIcon: (() -> Unit)? = null,
-    showSupportText: Boolean = false
+    keyboardActions: (() -> Unit)? = null,
+    onClickTrailingIcon: (() -> Unit)? = null
     ) {
     OutlinedTextField(
         value = textValue,
         onValueChange = onTextChanged,
         label = { Text(text = label) },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         keyboardOptions = keyboardOptions,
+        keyboardActions = KeyboardActions(
+            onDone = {
+            if (keyboardActions != null && keyboardController != null) {
+                keyboardController.hide()
+                keyboardActions()
+            }
+        }),
         isError = isInvalid,
         supportingText = {
-            if (supportTextError.length > 3 && isInvalid){
-                Text(text = supportText)
-            } else if(supportText.length > 3 && showSupportText){
+            if (isInvalid){
+                Text(text = supportTextError)
+            } else if(showSupportText){
                 Text(text = supportText)
             }
         },
         trailingIcon = {
-          if(trailingIcon != null && onClickTrailingIcon != null){
+          if(trailingIcon != null && onClickTrailingIcon != null && textValue.length > 3){
               IconButton(onClick = { onClickTrailingIcon() }) {
                   Icon(imageVector = trailingIcon, contentDescription = "Icon")
               }

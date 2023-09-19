@@ -3,6 +3,7 @@ package com.luigidev.himnosycorosmiepiadmin.form.ui.states
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material.icons.outlined.PlayArrow
@@ -26,10 +28,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
@@ -81,7 +86,12 @@ fun FormFillOutState(formViewModel: FormViewModel, navigationController: NavHost
             VideoField(formViewModel)
             VideoPreview(
                 formViewModel,
-                Modifier.padding(vertical = dimensionResource(id = R.dimen.common_min_padding))
+                Modifier.padding(
+                    top = dimensionResource(id = R.dimen.common_min_padding),
+                    bottom = dimensionResource(
+                        id = R.dimen.common_default_padding
+                    )
+                )
             )
         }
     }
@@ -93,8 +103,11 @@ fun FormFillOutState(formViewModel: FormViewModel, navigationController: NavHost
 fun ThumbnailPreview(modifier: Modifier, formViewModel: FormViewModel) {
     if (formViewModel.isThumbnailOnScreen) {
         ImageFromInternet(
-            url = "https://i3.ytimg.com/vi/Yt_SPQFbHj4/maxresdefault.jpg",
-            modifier = modifier.fillMaxWidth().clip(MaterialTheme.shapes.large)
+            url = formViewModel.mThumbnailURL,
+            modifier = modifier
+                .fillMaxWidth()
+                .aspectRatio(16f / 9f)
+                .clip(MaterialTheme.shapes.large)
         )
     } else {
         Card(
@@ -151,6 +164,7 @@ fun VideoPreview(formViewModel: FormViewModel, modifier: Modifier) {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun NumberField(formViewModel: FormViewModel) {
     TextFieldForm(
@@ -167,6 +181,7 @@ fun NumberField(formViewModel: FormViewModel) {
     )
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LyricsField(formViewModel: FormViewModel) {
     TextFieldForm(
@@ -178,6 +193,7 @@ fun LyricsField(formViewModel: FormViewModel) {
         onTextChanged = { formViewModel.onChangeLyrics(it) })
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TitleField(formViewModel: FormViewModel) {
     TextFieldForm(
@@ -189,21 +205,39 @@ fun TitleField(formViewModel: FormViewModel) {
         onTextChanged = { formViewModel.onChangeTitle(it) })
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ThumbnailField(formViewModel: FormViewModel) {
-    TextFieldForm(
-        label = "Thumbnail",
-        textValue = formViewModel.mThumbnailURL,
-        trailingIcon = Icons.Outlined.Refresh,
-        onClickTrailingIcon = { formViewModel.setPreviewThumbnail() },
-        onTextChanged = { formViewModel.onChangeThumbnail(it) },
-        supportText = "Enter a url photo or select from your gallery",
-        supportTextError = "Invalid url",
-        isInvalid = formViewModel.isThumbnailUrlInvalid,
-        showSupportText = true
-    )
+    val keyboardController = LocalSoftwareKeyboardController
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        TextFieldForm(
+            label = "Thumbnail",
+            textValue = formViewModel.mThumbnailURL,
+            trailingIcon = Icons.Filled.Cancel,
+            supportTextError = "Invalid url",
+            isInvalid = formViewModel.isThumbnailUrlInvalid,
+            modifier = Modifier.weight(1f),
+            maxLines = 4,
+            keyboardController = keyboardController.current,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done
+            ),
+            onClickTrailingIcon = { formViewModel.clearThumbnailText() },
+            onTextChanged = { formViewModel.onChangeThumbnail(it) },
+            keyboardActions = { formViewModel.setPreviewThumbnail() },
+        )
+        IconButton(onClick = { formViewModel.setPreviewThumbnail() }) {
+            Icon(imageVector = Icons.Outlined.Refresh, contentDescription = "")
+        }
+        IconButton(onClick = { /*TODO*/ }) {
+            Icon(imageVector = Icons.Outlined.PhotoLibrary, contentDescription = "")
+        }
+
+    }
+
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun VideoField(formViewModel: FormViewModel) {
     TextFieldForm(
@@ -214,14 +248,12 @@ fun VideoField(formViewModel: FormViewModel) {
         supportTextError = "Invalid url",
         onClickTrailingIcon = { formViewModel.previewVideo() },
         onTextChanged = { formViewModel.onChangeVideoUrl(it) },
+        maxLines = 4
     )
 }
 
 @Composable
 fun YoutubeVideo(videoId: String, modifier: Modifier, formViewModel: FormViewModel) {
-    /*
-        val context = LocalContext.current
-    */
     AndroidView(
         modifier = modifier,
         factory = { formViewModel.factoryVideo(it, videoId) }

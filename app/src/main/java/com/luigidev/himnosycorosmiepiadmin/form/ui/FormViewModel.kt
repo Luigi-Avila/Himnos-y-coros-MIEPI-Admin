@@ -7,8 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.text.isDigitsOnly
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -27,9 +25,8 @@ import kotlinx.coroutines.withContext
 import java.util.regex.Pattern
 
 class FormViewModel : ViewModel() {
-
-    private val _resultState = MutableLiveData<FormUIState>()
-    val resultState: LiveData<FormUIState> = _resultState
+    internal var resultState: FormUIState by mutableStateOf(FormUIState.FillOut)
+        private set
 
     private val uploadChoirUseCase = UploadChoirUseCase()
 
@@ -90,15 +87,15 @@ class FormViewModel : ViewModel() {
                 choirNumber = mNumber.toInt()
             )
             viewModelScope.launch(Dispatchers.IO) {
-                _resultState.postValue(FormUIState.Loading)
+                resultState = FormUIState.Loading
                 withContext(Dispatchers.Main) {
                     when (val result = uploadChoirUseCase(choir)) {
                         is ResultAPI.Error -> {
-                            _resultState.value = FormUIState.Error(result.message)
+                            resultState = FormUIState.Error(result.message)
                         }
 
                         is ResultAPI.Success -> {
-                            _resultState.value = FormUIState.Success(result.data)
+                            resultState = FormUIState.Success(result.data)
 
                         }
                     }
@@ -120,11 +117,11 @@ class FormViewModel : ViewModel() {
 
     fun goToHome(navigationController: NavHostController) {
         navigationController.navigate(Routes.HomeScreen.route)
-        _resultState.value = FormUIState.FillOut
+        resultState = FormUIState.FillOut
     }
 
     fun addNew() {
-        _resultState.value = FormUIState.FillOut
+        resultState = FormUIState.FillOut
     }
 
     fun onChangeTitle(title: String) {
@@ -165,8 +162,20 @@ class FormViewModel : ViewModel() {
     }
 
     fun setPreviewThumbnail(){
-        isThumbnailOnScreen = true
-        isThumbnailUrlInvalid = false
+        if (mThumbnailURL.length > 3){
+            isThumbnailOnScreen = true
+            isThumbnailUrlInvalid = false
+        } else {
+            isThumbnailOnScreen = false
+            isThumbnailUrlInvalid = true
+        }
+
+    }
+
+    fun clearThumbnailText(){
+        mThumbnailURL = ""
+        isThumbnailOnScreen = false
+        isThumbnailUrlInvalid = true
     }
 
     private fun getYoutubeVideoId(url: String): String? {
@@ -204,6 +213,4 @@ class FormViewModel : ViewModel() {
         )
         return view
     }
-
-
 }

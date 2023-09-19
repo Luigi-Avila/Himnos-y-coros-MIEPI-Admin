@@ -10,12 +10,12 @@ import com.luigidev.himnosycorosmiepiadmin.form.ui.FormViewModel
 
 @Composable
 fun FormSuccessState(formViewModel: FormViewModel, navigationController: NavHostController) {
-    Dialog(onDismissRequest = {} ) {
+    Dialog(onDismissRequest = {}) {
         Row() {
             Button(onClick = { formViewModel.goToHome(navigationController) }) {
                 Text(text = "Go to home")
             }
-            Button(onClick = { formViewModel.addNew()  }) {
+            Button(onClick = { formViewModel.addNew() }) {
                 Text(text = "Add new")
             }
         }

@@ -19,16 +19,19 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstan
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.regex.Pattern
+import javax.inject.Inject
 
-class FormViewModel : ViewModel() {
+@HiltViewModel
+class FormViewModel @Inject constructor(private val uploadChoirUseCase: UploadChoirUseCase) : ViewModel() {
     internal var resultState: FormUIState by mutableStateOf(FormUIState.FillOut)
         private set
 
-    private val uploadChoirUseCase = UploadChoirUseCase()
+//    private val uploadChoirUseCase = UploadChoirUseCase()
 
     internal var mTitle: String by mutableStateOf("")
         private set

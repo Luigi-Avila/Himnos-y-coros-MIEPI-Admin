@@ -14,7 +14,9 @@ import com.luigidev.himnosycorosmiepiadmin.core.Routes
 import com.luigidev.himnosycorosmiepiadmin.form.ui.FormScreen
 import com.luigidev.himnosycorosmiepiadmin.home.ui.HomeScreen
 import com.luigidev.himnosycorosmiepiadmin.theme.HimnosYCorosMIEPIAdminTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

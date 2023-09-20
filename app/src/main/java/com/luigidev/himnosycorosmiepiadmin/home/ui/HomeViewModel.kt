@@ -9,14 +9,17 @@ import androidx.lifecycle.viewModelScope
 import com.luigidev.himnosycorosmiepiadmin.core.ResultAPI
 import com.luigidev.himnosycorosmiepiadmin.home.domain.models.Choir
 import com.luigidev.himnosycorosmiepiadmin.home.domain.state.HomeUIState
-import com.luigidev.himnosycorosmiepiadmin.home.domain.usecase.GetChoirsUsecase
+import com.luigidev.himnosycorosmiepiadmin.home.domain.usecase.GetChoirsUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class HomeViewModel: ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor( private val getChoirsUseCase: GetChoirsUseCase) : ViewModel() {
 
-    private val getChoirsUsecase = GetChoirsUsecase()
+//    private val getChoirsUsecase = GetChoirsUsecase()
 
     internal var homeUIState: HomeUIState<List<Choir?>> by mutableStateOf(HomeUIState.Loading)
         private set
@@ -36,7 +39,7 @@ class HomeViewModel: ViewModel() {
         Log.i("Hola", "Fun running")
         viewModelScope.launch(Dispatchers.IO) {
 
-            when(val result = getChoirsUsecase()){
+            when(val result = getChoirsUseCase()){
                 is ResultAPI.Error -> {
                     homeUIState = HomeUIState.Error(result.message)
                 }

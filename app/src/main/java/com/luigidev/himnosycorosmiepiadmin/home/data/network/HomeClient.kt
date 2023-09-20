@@ -1,20 +1,18 @@
 package com.luigidev.himnosycorosmiepiadmin.home.data.network
 
 import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
 import com.luigidev.himnosycorosmiepiadmin.core.FirebaseCollections
 import com.luigidev.himnosycorosmiepiadmin.core.ResultAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class HomeClient {
+class HomeClient @Inject constructor(private val db: FirebaseFirestore) {
 
     suspend fun getChoirs(): ResultAPI<List<DocumentSnapshot>> {
-        val db = Firebase.firestore
         val reference = db.collection(FirebaseCollections.CHOIRS.toString())
-
         return withContext(Dispatchers.IO) {
             try {
                 val result = reference.get().await()

@@ -85,6 +85,11 @@ dependencies {
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
     kapt "com.google.dagger:hilt-compiler:2.44"
 
+    //For rememberLauncherForActivityResult()
+    implementation 'androidx.activity:activity-compose:1.7.2'
+
+    //For PickVisualMedia contract
+    implementation 'androidx.activity:activity-ktx:1.7.2'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

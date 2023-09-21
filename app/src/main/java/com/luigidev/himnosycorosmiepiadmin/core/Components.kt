@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
@@ -37,11 +38,17 @@ fun TextFieldForm(
     oneLine: Boolean = false,
     maxLines: Int = Int.MAX_VALUE,
     trailingIcon: ImageVector? = null,
-    keyboardController: SoftwareKeyboardController? = null,
     onTextChanged: (String) -> Unit,
     keyboardActions: (() -> Unit)? = null,
     onClickTrailingIcon: (() -> Unit)? = null
     ) {
+
+    var keyboardController: SoftwareKeyboardController? = null
+
+    if (keyboardActions != null) {
+        keyboardController = LocalSoftwareKeyboardController.current
+    }
+
     OutlinedTextField(
         value = textValue,
         onValueChange = onTextChanged,

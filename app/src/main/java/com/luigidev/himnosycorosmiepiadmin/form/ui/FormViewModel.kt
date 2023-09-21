@@ -232,4 +232,10 @@ class FormViewModel @Inject constructor(private val uploadChoirUseCase: UploadCh
         isThumbnailOnScreen = false
     }
 
+    fun clearVideoText(){
+        mVideoUrl = ""
+        isVideoPreviewOnScreen = false
+        isVideoUrlInvalid = true
+    }
+
 }

@@ -31,10 +31,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -186,7 +184,6 @@ fun VideoPreview(formViewModel: FormViewModel, modifier: Modifier) {
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun NumberField(formViewModel: FormViewModel) {
     TextFieldForm(
@@ -203,7 +200,6 @@ fun NumberField(formViewModel: FormViewModel) {
     )
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LyricsField(formViewModel: FormViewModel) {
     TextFieldForm(
@@ -215,7 +211,6 @@ fun LyricsField(formViewModel: FormViewModel) {
         onTextChanged = { formViewModel.onChangeLyrics(it) })
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TitleField(formViewModel: FormViewModel) {
     TextFieldForm(
@@ -227,11 +222,9 @@ fun TitleField(formViewModel: FormViewModel) {
         onTextChanged = { formViewModel.onChangeTitle(it) })
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ThumbnailField(formViewModel: FormViewModel) {
 
-    val keyboardController = LocalSoftwareKeyboardController
     val launcher = rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
         if (uri != null) {
             formViewModel.setThumbnailPreview(uri)
@@ -247,7 +240,6 @@ fun ThumbnailField(formViewModel: FormViewModel) {
             isInvalid = formViewModel.isThumbnailUrlInvalid,
             modifier = Modifier.weight(1f),
             maxLines = 4,
-            keyboardController = keyboardController.current,
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done
             ),
@@ -266,17 +258,20 @@ fun ThumbnailField(formViewModel: FormViewModel) {
 
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun VideoField(formViewModel: FormViewModel) {
     TextFieldForm(
         label = "Video",
         textValue = formViewModel.mVideoUrl,
-        trailingIcon = Icons.Outlined.Refresh,
+        trailingIcon = Icons.Filled.Cancel,
         isInvalid = formViewModel.isVideoUrlInvalid,
         supportTextError = "Invalid url",
-        onClickTrailingIcon = { formViewModel.previewVideo() },
+        onClickTrailingIcon = { formViewModel.clearVideoText() },
         onTextChanged = { formViewModel.onChangeVideoUrl(it) },
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Done
+        ),
+        keyboardActions = { formViewModel.previewVideo() },
         maxLines = 4
     )
 }

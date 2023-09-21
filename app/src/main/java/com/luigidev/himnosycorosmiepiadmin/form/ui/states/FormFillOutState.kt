@@ -1,5 +1,8 @@
 package com.luigidev.himnosycorosmiepiadmin.form.ui.states
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Refresh
@@ -40,6 +44,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import com.luigidev.himnosycorosmiepiadmin.R
 import com.luigidev.himnosycorosmiepiadmin.core.ImageFromInternet
+import com.luigidev.himnosycorosmiepiadmin.core.ImageFromLocal
 import com.luigidev.himnosycorosmiepiadmin.core.TextFieldForm
 import com.luigidev.himnosycorosmiepiadmin.form.ui.FormViewModel
 
@@ -78,7 +83,9 @@ fun FormFillOutState(formViewModel: FormViewModel, navigationController: NavHost
             TitleField(formViewModel)
             LyricsField(formViewModel)
             NumberField(formViewModel)
-            ThumbnailField(formViewModel)
+            if (formViewModel.mThumbnailUri == null) {
+                ThumbnailField(formViewModel)
+            }
             ThumbnailPreview(
                 Modifier.padding(top = dimensionResource(id = R.dimen.common_min_padding)),
                 formViewModel
@@ -101,14 +108,38 @@ fun FormFillOutState(formViewModel: FormViewModel, navigationController: NavHost
 
 @Composable
 fun ThumbnailPreview(modifier: Modifier, formViewModel: FormViewModel) {
+
+
     if (formViewModel.isThumbnailOnScreen) {
-        ImageFromInternet(
-            url = formViewModel.mThumbnailURL,
-            modifier = modifier
-                .fillMaxWidth()
-                .aspectRatio(16f / 9f)
-                .clip(MaterialTheme.shapes.large)
-        )
+        if (formViewModel.mThumbnailUri == null) {
+            ImageFromInternet(
+                url = formViewModel.mThumbnailURL,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .aspectRatio(16f / 9f)
+                    .clip(MaterialTheme.shapes.large)
+            )
+        } else {
+            formViewModel.mThumbnailUri?.let {
+                ImageFromLocal(
+                    uri = it, modifier = Modifier.padding(
+                        top = dimensionResource(
+                            id = R.dimen.common_min_padding
+                        )
+                    )
+                )
+            }
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = dimensionResource(id = R.dimen.common_min_padding)),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                IconButton(onClick = { formViewModel.cancelThumbnail() }) {
+                    Icon(imageVector = Icons.Outlined.Close, contentDescription = "")
+                }
+            }
+        }
     } else {
         Card(
             modifier
@@ -118,17 +149,12 @@ fun ThumbnailPreview(modifier: Modifier, formViewModel: FormViewModel) {
             Column(
                 Modifier
                     .fillMaxSize()
-                    .background(Color.Red)
                     .padding(dimensionResource(id = R.dimen.common_default_padding)),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
 
             ) {
-
-
                 Icon(Icons.Outlined.PhotoLibrary, contentDescription = "")
-                Text(text = "You will see the thumbnail here")
-
             }
         }
     }
@@ -208,7 +234,14 @@ fun TitleField(formViewModel: FormViewModel) {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ThumbnailField(formViewModel: FormViewModel) {
+
     val keyboardController = LocalSoftwareKeyboardController
+    val launcher = rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
+        if (uri != null) {
+            formViewModel.setThumbnailPreview(uri)
+        }
+    }
+
     Row(verticalAlignment = Alignment.CenterVertically) {
         TextFieldForm(
             label = "Thumbnail",
@@ -229,7 +262,7 @@ fun ThumbnailField(formViewModel: FormViewModel) {
         IconButton(onClick = { formViewModel.setPreviewThumbnail() }) {
             Icon(imageVector = Icons.Outlined.Refresh, contentDescription = "")
         }
-        IconButton(onClick = { /*TODO*/ }) {
+        IconButton(onClick = { launcher.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly)) }) {
             Icon(imageVector = Icons.Outlined.PhotoLibrary, contentDescription = "")
         }
 

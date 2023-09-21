@@ -1,6 +1,7 @@
 package com.luigidev.himnosycorosmiepiadmin.form.ui
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import android.view.View
 import androidx.compose.runtime.getValue
@@ -71,6 +72,9 @@ class FormViewModel @Inject constructor(private val uploadChoirUseCase: UploadCh
         private set
 
     internal var isThumbnailUrlInvalid: Boolean by mutableStateOf(false)
+        private set
+
+    internal var mThumbnailUri: Uri? by mutableStateOf(null)
         private set
 
     private fun formatText() {
@@ -216,4 +220,16 @@ class FormViewModel @Inject constructor(private val uploadChoirUseCase: UploadCh
         )
         return view
     }
+
+    fun setThumbnailPreview(uri: Uri){
+        mThumbnailUri = uri
+        isThumbnailOnScreen = true
+        Log.i("URI", "Uri value $uri")
+    }
+
+    fun cancelThumbnail(){
+        mThumbnailUri = null
+        isThumbnailOnScreen = false
+    }
+
 }

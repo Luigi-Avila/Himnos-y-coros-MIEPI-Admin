@@ -3,7 +3,6 @@ package com.luigidev.himnosycorosmiepiadmin.form.ui.states
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.*
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.input.ImeAction
@@ -177,14 +175,12 @@ fun VideoPreview(formViewModel: FormViewModel, modifier: Modifier) {
             Column(
                 Modifier
                     .fillMaxSize()
-                    .background(Color.Red)
                     .padding(dimensionResource(id = R.dimen.common_default_padding)),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
 
             ) {
                 Icon(Icons.Outlined.PlayArrow, contentDescription = "")
-                Text(text = "You will see the video here")
             }
         }
     }

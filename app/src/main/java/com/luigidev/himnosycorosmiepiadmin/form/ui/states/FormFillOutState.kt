@@ -149,17 +149,12 @@ fun ThumbnailPreview(modifier: Modifier, formViewModel: FormViewModel) {
             Column(
                 Modifier
                     .fillMaxSize()
-                    .background(Color.Red)
                     .padding(dimensionResource(id = R.dimen.common_default_padding)),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
 
             ) {
-
-
                 Icon(Icons.Outlined.PhotoLibrary, contentDescription = "")
-                Text(text = "You will see the thumbnail here")
-
             }
         }
     }

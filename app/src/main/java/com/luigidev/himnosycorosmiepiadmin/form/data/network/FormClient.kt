@@ -51,7 +51,7 @@ class FormClient @Inject constructor(
                     }?.addOnSuccessListener { task ->
                         task.storage.downloadUrl.addOnSuccessListener { url ->
                             documentReference.document(documentData.id)
-                                .set(choir.copy(localThumbnail = url)).addOnSuccessListener {
+                                .set(choir.copy(id = documentData.id, localThumbnail = url)).addOnSuccessListener {
                                     state.invoke(ResultAPI.Success("Success"))
                                 }
                         }

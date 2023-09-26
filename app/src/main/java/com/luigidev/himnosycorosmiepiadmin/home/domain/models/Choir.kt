@@ -5,5 +5,5 @@ data class Choir(
     val choirNumber: Int,
     val title: String,
     val lyrics: String,
-    val thumbnail: String? = null
+    val thumbnail: String?
 )

@@ -1,5 +1,6 @@
 package com.luigidev.himnosycorosmiepiadmin.home.ui.states
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,10 +24,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.luigidev.himnosycorosmiepiadmin.R
 import com.luigidev.himnosycorosmiepiadmin.core.Routes
 import com.luigidev.himnosycorosmiepiadmin.core.Title
 import com.luigidev.himnosycorosmiepiadmin.home.domain.models.Choir
@@ -90,12 +93,23 @@ fun ChoirItem(choirData: Choir) {
             )
         },
         leadingContent = {
-            AsyncImage(
-                model = choirData.thumbnail,
-                contentDescription = "",
-                modifier = Modifier.size(80.dp),
-                contentScale = ContentScale.Crop
-            )
+            if (choirData.thumbnail != null) {
+                AsyncImage(
+                    model = choirData.thumbnail,
+                    contentDescription = "",
+                    modifier = Modifier.size(80.dp),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Image(
+                    modifier = Modifier.size(80.dp),
+                    painter = painterResource(id = R.drawable.without_image),
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop
+                )
+
+            }
+
         },
         trailingContent = {
             TextButton(onClick = { /*TODO*/ }) {

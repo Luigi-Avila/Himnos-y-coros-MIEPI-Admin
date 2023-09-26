@@ -7,6 +7,6 @@ import javax.inject.Inject
 
 class GetChoirsUseCase @Inject constructor(private val repository: IHomeRepository) {
 
-    operator fun invoke(apiState: (HomeResultAPI<List<Choir>>) -> Unit) =
+    operator fun invoke(apiState: (HomeResultAPI<List<Choir?>>) -> Unit) =
         repository.getChoirs(apiState)
 }

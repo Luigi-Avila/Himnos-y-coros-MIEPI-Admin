@@ -74,15 +74,6 @@ fun HomeSuccess(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChoirItem(choirData: Choir) {
-//    ListItem(
-//        headlineText = { Text(text = choirData.title) },
-//        supportingText = { Text(text = choirData.lyrics, maxLines = 2, overflow = TextOverflow.Ellipsis) },
-//        modifier = Modifier.background(Color.Red),
-//        leadingContent = {
-//            Icon(Icons.Outlined.Description, contentDescription = "")
-//        }
-//    )
-//    Divider()
     ListItem(
         headlineText = {
             Text(
@@ -100,7 +91,7 @@ fun ChoirItem(choirData: Choir) {
         },
         leadingContent = {
             AsyncImage(
-                model = "https://i3.ytimg.com/vi/Yt_SPQFbHj4/maxresdefault.jpg",
+                model = choirData.thumbnail,
                 contentDescription = "",
                 modifier = Modifier.size(80.dp),
                 contentScale = ContentScale.Crop

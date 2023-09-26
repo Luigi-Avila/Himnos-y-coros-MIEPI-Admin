@@ -1,62 +1,41 @@
 package com.luigidev.himnosycorosmiepiadmin.home.ui
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.luigidev.himnosycorosmiepiadmin.core.ResultAPI
+import com.luigidev.himnosycorosmiepiadmin.home.data.utils.HomeResultAPI
 import com.luigidev.himnosycorosmiepiadmin.home.domain.models.Choir
 import com.luigidev.himnosycorosmiepiadmin.home.domain.state.HomeUIState
 import com.luigidev.himnosycorosmiepiadmin.home.domain.usecase.GetChoirsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor( private val getChoirsUseCase: GetChoirsUseCase) : ViewModel() {
-
-//    private val getChoirsUsecase = GetChoirsUsecase()
+class HomeViewModel @Inject constructor(private val getChoirsUseCase: GetChoirsUseCase) :
+    ViewModel() {
 
     internal var homeUIState: HomeUIState<List<Choir?>> by mutableStateOf(HomeUIState.Loading)
         private set
 
-    /*private var _choirs = MutableLiveData<List<Choir?>>()
-    val choirs: LiveData<List<Choir?>> = _choirs*/
-
-
-    /*internal var mPassword: String by mutableStateOf("")
-        private set*/
 
     init {
         getChoirs()
     }
 
-   fun getChoirs(){
-        Log.i("Hola", "Fun running")
+    private fun getChoirs() {
         viewModelScope.launch(Dispatchers.IO) {
-
-            when(val result = getChoirsUseCase()){
-                is ResultAPI.Error -> {
-                    homeUIState = HomeUIState.Error(result.message)
-                }
-                is ResultAPI.Success -> {
-                    withContext(Dispatchers.Main){
-                       homeUIState = HomeUIState.Success(result.data)
-                    }
-                }
-
-                is ResultAPI.Loading -> {
-
+            getChoirsUseCase { result ->
+                homeUIState = when (result) {
+                    is HomeResultAPI.Error -> HomeUIState.Error(result.message)
+                    is HomeResultAPI.Success -> HomeUIState.Success(result.data)
                 }
             }
+
         }
     }
 
-    /*internal fun onPasswordChanged(password: String){
-        mPassword = password
-    }*/
 }

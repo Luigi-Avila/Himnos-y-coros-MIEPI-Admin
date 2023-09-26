@@ -5,7 +5,7 @@ import com.luigidev.himnosycorosmiepiadmin.form.domain.models.Choir
 
 interface IFormRepository {
 
-    suspend fun uploadChoir(choir: Choir, uploadingState: (ResultAPI<String>) -> Unit)
+    fun uploadChoir(choir: Choir, uploadingState: (ResultAPI<String>) -> Unit)
 
-    suspend fun uploadChoirWithImage(choir: Choir, uploadingState: (ResultAPI<String>) -> Unit)
+    fun uploadChoirWithImage(choir: Choir, uploadingState: (ResultAPI<String>) -> Unit)
 }

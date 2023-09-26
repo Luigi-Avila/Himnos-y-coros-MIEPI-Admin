@@ -9,7 +9,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.luigidev.himnosycorosmiepiadmin.core.ResultAPI
 import com.luigidev.himnosycorosmiepiadmin.core.Routes
@@ -21,9 +20,6 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -34,8 +30,6 @@ class FormViewModel @Inject constructor(
     ViewModel() {
     internal var resultState: FormUIState by mutableStateOf(FormUIState.FillOut)
         private set
-
-//    private val uploadChoirUseCase = UploadChoirUseCase()
 
     internal var mTitle: String by mutableStateOf("")
         private set
@@ -100,30 +94,23 @@ class FormViewModel @Inject constructor(
                 internetThumbnail = mThumbnailURL,
                 video = mVideoUrl
             )
-            viewModelScope.launch(Dispatchers.IO) {
-                resultState = FormUIState.Loading
-                withContext(Dispatchers.Main) {
-                    uploadChoirUseCase(choir) { result ->
-                        resultState = when (result) {
-                            is ResultAPI.Error -> {
-                                FormUIState.Error(result.message)
-                            }
-
-                            is ResultAPI.Loading -> {
-                                 FormUIState.InProgress(result.progress.toString())
-                            }
-
-                            is ResultAPI.Success -> {
-                                FormUIState.Success(result.data)
-                            }
-                        }
+            resultState = FormUIState.Loading
+            uploadChoirUseCase(choir) { result ->
+                resultState = when (result) {
+                    is ResultAPI.Error -> {
+                        FormUIState.Error(result.message)
                     }
 
+                    is ResultAPI.Loading -> {
+                        FormUIState.InProgress(result.progress.toString())
+                    }
 
+                    is ResultAPI.Success -> {
+                        FormUIState.Success(result.data)
+                    }
                 }
             }
         }
-
     }
 
     private fun validateFields(): Boolean {
@@ -252,32 +239,5 @@ class FormViewModel @Inject constructor(
         isVideoUrlInvalid = true
     }
 
-//    fun getExampleFlow(): Flow<Int> {
-////       FormClient(FirebaseFirestore.getInstance()).uploadChoirWithImage(progressListener = object: ProgressListener {
-////           override fun onProgress(progress: Double) {
-////
-////           }
-////
-////           override fun onSuccess() {
-////
-////           }
-////       })
-//        FormClient(
-//            FirebaseFirestore.getInstance(),
-//            FirebaseStorage.getInstance()
-//        ).uploadChoirWithImage("url") { resultApi ->
-//            when (resultApi) {
-//                is ResultAPI.Error -> TODO()
-//                is ResultAPI.Loading -> TODO()
-//                is ResultAPI.Success -> TODO()
-//            }
-//        }
-//        return flow {
-//            for (i in 1..10) {
-//                emit(i)
-//                kotlinx.coroutines.delay((1000))
-//            }
-//        }
-//    }
 
 }

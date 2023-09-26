@@ -19,6 +19,10 @@ class HomeService @Inject constructor(private val client: HomeClient) {
                 val response = result.data.map { it.toDomain() }
                 ResultAPI.Success(response)
             }
+
+            is ResultAPI.Loading -> {
+                ResultAPI.Loading(0.0)
+            }
         }
     }
 

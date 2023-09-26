@@ -48,6 +48,10 @@ class HomeViewModel @Inject constructor( private val getChoirsUseCase: GetChoirs
                        homeUIState = HomeUIState.Success(result.data)
                     }
                 }
+
+                is ResultAPI.Loading -> {
+
+                }
             }
         }
     }

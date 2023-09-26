@@ -6,6 +6,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.luigidev.himnosycorosmiepiadmin.form.domain.state.FormUIState
 import com.luigidev.himnosycorosmiepiadmin.form.ui.states.FormFillOutState
+import com.luigidev.himnosycorosmiepiadmin.form.ui.states.FormInProgressState
 import com.luigidev.himnosycorosmiepiadmin.form.ui.states.FormSuccessState
 
 
@@ -29,6 +30,10 @@ fun FormScreen(navigationController: NavHostController) {
 
         is FormUIState.Success -> {
             FormSuccessState(formViewModel, navigationController)
+        }
+
+        is FormUIState.InProgress -> {
+            FormInProgressState((formViewModel.resultState as FormUIState.InProgress).progress)
         }
     }
 

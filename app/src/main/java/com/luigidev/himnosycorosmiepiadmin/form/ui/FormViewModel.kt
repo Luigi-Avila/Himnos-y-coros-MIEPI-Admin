@@ -28,7 +28,10 @@ import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
-class FormViewModel @Inject constructor(private val uploadChoirUseCase: UploadChoirUseCase) : ViewModel() {
+class FormViewModel @Inject constructor(
+    private val uploadChoirUseCase: UploadChoirUseCase
+) :
+    ViewModel() {
     internal var resultState: FormUIState by mutableStateOf(FormUIState.FillOut)
         private set
 
@@ -77,6 +80,7 @@ class FormViewModel @Inject constructor(private val uploadChoirUseCase: UploadCh
     internal var mThumbnailUri: Uri? by mutableStateOf(null)
         private set
 
+
     private fun formatText() {
         mTitle = mTitle.trim()
         mLyrics = mLyrics.trim()
@@ -91,21 +95,31 @@ class FormViewModel @Inject constructor(private val uploadChoirUseCase: UploadCh
             val choir = Choir(
                 title = mTitle,
                 lyrics = mLyrics,
-                choirNumber = mNumber.toInt()
+                choirNumber = mNumber.toInt(),
+                localThumbnail = mThumbnailUri,
+                internetThumbnail = mThumbnailURL,
+                video = mVideoUrl
             )
             viewModelScope.launch(Dispatchers.IO) {
                 resultState = FormUIState.Loading
                 withContext(Dispatchers.Main) {
-                    when (val result = uploadChoirUseCase(choir)) {
-                        is ResultAPI.Error -> {
-                            resultState = FormUIState.Error(result.message)
-                        }
+                    uploadChoirUseCase(choir) { result ->
+                        resultState = when (result) {
+                            is ResultAPI.Error -> {
+                                FormUIState.Error(result.message)
+                            }
 
-                        is ResultAPI.Success -> {
-                            resultState = FormUIState.Success(result.data)
+                            is ResultAPI.Loading -> {
+                                 FormUIState.InProgress(result.progress.toString())
+                            }
 
+                            is ResultAPI.Success -> {
+                                FormUIState.Success(result.data)
+                            }
                         }
                     }
+
+
                 }
             }
         }
@@ -151,7 +165,7 @@ class FormViewModel @Inject constructor(private val uploadChoirUseCase: UploadCh
         mVideoUrl = videoUrl
     }
 
-    fun onChangeThumbnail(thumbnailUrl: String){
+    fun onChangeThumbnail(thumbnailUrl: String) {
         mThumbnailURL = thumbnailUrl
     }
 
@@ -168,8 +182,8 @@ class FormViewModel @Inject constructor(private val uploadChoirUseCase: UploadCh
         }
     }
 
-    fun setPreviewThumbnail(){
-        if (mThumbnailURL.length > 3){
+    fun setPreviewThumbnail() {
+        if (mThumbnailURL.length > 3) {
             isThumbnailOnScreen = true
             isThumbnailUrlInvalid = false
         } else {
@@ -179,7 +193,7 @@ class FormViewModel @Inject constructor(private val uploadChoirUseCase: UploadCh
 
     }
 
-    fun clearThumbnailText(){
+    fun clearThumbnailText() {
         mThumbnailURL = ""
         isThumbnailOnScreen = false
         isThumbnailUrlInvalid = true
@@ -221,21 +235,49 @@ class FormViewModel @Inject constructor(private val uploadChoirUseCase: UploadCh
         return view
     }
 
-    fun setThumbnailPreview(uri: Uri){
+    fun setThumbnailPreview(uri: Uri) {
         mThumbnailUri = uri
         isThumbnailOnScreen = true
         Log.i("URI", "Uri value $uri")
     }
 
-    fun cancelThumbnail(){
+    fun cancelThumbnail() {
         mThumbnailUri = null
         isThumbnailOnScreen = false
     }
 
-    fun clearVideoText(){
+    fun clearVideoText() {
         mVideoUrl = ""
         isVideoPreviewOnScreen = false
         isVideoUrlInvalid = true
     }
+
+//    fun getExampleFlow(): Flow<Int> {
+////       FormClient(FirebaseFirestore.getInstance()).uploadChoirWithImage(progressListener = object: ProgressListener {
+////           override fun onProgress(progress: Double) {
+////
+////           }
+////
+////           override fun onSuccess() {
+////
+////           }
+////       })
+//        FormClient(
+//            FirebaseFirestore.getInstance(),
+//            FirebaseStorage.getInstance()
+//        ).uploadChoirWithImage("url") { resultApi ->
+//            when (resultApi) {
+//                is ResultAPI.Error -> TODO()
+//                is ResultAPI.Loading -> TODO()
+//                is ResultAPI.Success -> TODO()
+//            }
+//        }
+//        return flow {
+//            for (i in 1..10) {
+//                emit(i)
+//                kotlinx.coroutines.delay((1000))
+//            }
+//        }
+//    }
 
 }

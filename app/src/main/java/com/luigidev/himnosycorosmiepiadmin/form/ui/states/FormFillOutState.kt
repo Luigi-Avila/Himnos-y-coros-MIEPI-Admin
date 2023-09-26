@@ -96,6 +96,7 @@ fun FormFillOutState(formViewModel: FormViewModel, navigationController: NavHost
                     )
                 )
             )
+
         }
     }
 
@@ -227,6 +228,10 @@ fun ThumbnailField(formViewModel: FormViewModel) {
 
     val launcher = rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
         if (uri != null) {
+            uri.path?.let {
+                println("Path: $it")
+            }
+            println("Path URI: $uri")
             formViewModel.setThumbnailPreview(uri)
         }
     }

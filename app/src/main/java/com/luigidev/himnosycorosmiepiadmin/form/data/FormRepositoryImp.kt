@@ -6,10 +6,16 @@ import com.luigidev.himnosycorosmiepiadmin.form.domain.models.Choir
 import com.luigidev.himnosycorosmiepiadmin.form.domain.repository.IFormRepository
 import javax.inject.Inject
 
-class FormRepositoryImp @Inject constructor( private val service: FormService) : IFormRepository {
+class FormRepositoryImp @Inject constructor(private val service: FormService) : IFormRepository {
+    override suspend fun uploadChoir(
+        choir: Choir,
+        uploadingState: (ResultAPI<String>) -> Unit
+    ) = service.uploadChoir(choir, uploadingState)
 
-//    private val service = FormService()
+    override suspend fun uploadChoirWithImage(
+        choir: Choir,
+        uploadingState: (ResultAPI<String>) -> Unit
+    ) = service.uploadChoirWithImage(choir, uploadingState)
 
 
-    override suspend fun uploadChoir(choir: Choir): ResultAPI<String> = service.uploadChoir(choir)
 }

@@ -6,8 +6,16 @@ import javax.inject.Inject
 
 class FormService @Inject constructor(private val client: FormClient) {
 
-//    private val client = FormClient()
 
-   suspend fun uploadChoir(choir: Choir): ResultAPI<String> = client.uploadChoir(choir)
+    suspend fun uploadChoir(
+        choir: Choir,
+        uploadingState: (ResultAPI<String>) -> Unit
+    ) = client.uploadChoir(choir, uploadingState)
+
+    suspend fun uploadChoirWithImage(
+        choir: Choir,
+        state: (ResultAPI<String>) -> Unit
+    ) =
+        client.uploadChoirWithImage(choir, state)
 
 }

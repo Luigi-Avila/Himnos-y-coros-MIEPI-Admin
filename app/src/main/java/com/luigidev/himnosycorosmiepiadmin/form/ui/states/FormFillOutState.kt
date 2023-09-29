@@ -46,7 +46,10 @@ import com.luigidev.himnosycorosmiepiadmin.form.ui.FormViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormFillOutState(formViewModel: FormViewModel, navigationController: NavHostController) {
+fun FormFillOutState(
+    formViewModel: FormViewModel,
+    navigationController: NavHostController
+) {
 
     Scaffold(
         topBar = {

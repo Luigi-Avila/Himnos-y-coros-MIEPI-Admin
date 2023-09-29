@@ -14,6 +14,8 @@ import com.luigidev.himnosycorosmiepiadmin.core.ResultAPI
 import com.luigidev.himnosycorosmiepiadmin.core.Routes
 import com.luigidev.himnosycorosmiepiadmin.form.domain.models.Choir
 import com.luigidev.himnosycorosmiepiadmin.form.domain.state.FormUIState
+import com.luigidev.himnosycorosmiepiadmin.form.domain.usecase.GetChoirByIdUseCase
+import com.luigidev.himnosycorosmiepiadmin.form.domain.usecase.UpdateChoirUseCase
 import com.luigidev.himnosycorosmiepiadmin.form.domain.usecase.UploadChoirUseCase
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
@@ -25,11 +27,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FormViewModel @Inject constructor(
-    private val uploadChoirUseCase: UploadChoirUseCase
+    private val uploadChoirUseCase: UploadChoirUseCase,
+    private val getChoirByIdUseCase: GetChoirByIdUseCase,
+    private val updateChoirUseCase: UpdateChoirUseCase
 ) :
     ViewModel() {
     internal var resultState: FormUIState by mutableStateOf(FormUIState.FillOut)
         private set
+
+    private var mEditMode: Boolean by mutableStateOf(false)
+
+    private var mChoirId: String by mutableStateOf("")
 
     internal var mTitle: String by mutableStateOf("")
         private set
@@ -87,6 +95,7 @@ class FormViewModel @Inject constructor(
         val validation = validateFields()
         if (validation) {
             val choir = Choir(
+                id = mChoirId,
                 title = mTitle,
                 lyrics = mLyrics,
                 choirNumber = mNumber.toInt(),
@@ -95,20 +104,38 @@ class FormViewModel @Inject constructor(
                 video = mVideoUrl
             )
             resultState = FormUIState.Loading
-            uploadChoirUseCase(choir) { result ->
-                resultState = when (result) {
-                    is ResultAPI.Error -> {
-                        FormUIState.Error(result.message)
-                    }
+            if (mEditMode) {
+                updateChoir(mChoirId, choir)
+            } else {
+                uploadNewChoir(choir)
+            }
+        }
+    }
 
-                    is ResultAPI.Loading -> {
-                        FormUIState.InProgress(result.progress.toString())
-                    }
-
-                    is ResultAPI.Success -> {
-                        FormUIState.Success(result.data)
-                    }
+    private fun uploadNewChoir(choir: Choir) {
+        uploadChoirUseCase(choir) { result ->
+            resultState = when (result) {
+                is ResultAPI.Error -> {
+                    FormUIState.Error(result.message)
                 }
+
+                is ResultAPI.Loading -> {
+                    FormUIState.InProgress(result.progress.toString())
+                }
+
+                is ResultAPI.Success -> {
+                    FormUIState.Success(result.data)
+                }
+            }
+        }
+    }
+
+    private fun updateChoir(id: String, choir: Choir) {
+        updateChoirUseCase(id, choir) { result ->
+            resultState = when (result) {
+                is ResultAPI.Error -> FormUIState.Error(result.message)
+                is ResultAPI.Loading -> FormUIState.InProgress(result.progress.toString())
+                is ResultAPI.Success -> FormUIState.Success(result.data)
             }
         }
     }
@@ -225,6 +252,7 @@ class FormViewModel @Inject constructor(
     fun setThumbnailPreview(uri: Uri) {
         mThumbnailUri = uri
         isThumbnailOnScreen = true
+        mThumbnailURL = ""
         Log.i("URI", "Uri value $uri")
     }
 
@@ -239,5 +267,38 @@ class FormViewModel @Inject constructor(
         isVideoUrlInvalid = true
     }
 
+    fun getChoir(choirId: String) {
+        getChoirByIdUseCase(choirId) { result ->
+            when (result) {
+                is ResultAPI.Error -> resultState = FormUIState.Error(result.message)
+                is ResultAPI.Loading -> resultState = FormUIState.Loading
+                is ResultAPI.Success -> {
+                    Log.i("VIEWMODEL", "STATE changed ")
+                    Log.i("VIEWMODEL", "result ${result.data}")
+                    resultState = FormUIState.FillOut
+                    mEditMode = true
+                    with(result.data) {
+                        mTitle = this.title
+                        mLyrics = this.lyrics
+                        mNumber = this.choirNumber.toString()
+                        mThumbnailURL = this.thumbnail ?: ""
+                        mVideoUrl = this.video ?: ""
+                        mChoirId = this.id
+                    }
+                    Log.i(
+                        "VIEWMODEL",
+                        "THUMBAIL ${mThumbnailURL.isNotEmpty()} VIDEO ${mVideoUrl.isNotEmpty()}"
+                    )
+                    if (mThumbnailURL.isNotEmpty()) {
+                        setPreviewThumbnail()
+                    }
+                    if (mVideoUrl.isNotEmpty()) {
+                        previewVideo()
+                    }
+
+                }
+            }
+        }
+    }
 
 }

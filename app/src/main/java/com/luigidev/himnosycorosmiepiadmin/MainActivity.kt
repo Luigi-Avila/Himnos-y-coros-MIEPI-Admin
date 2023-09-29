@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.luigidev.himnosycorosmiepiadmin.core.Routes
 import com.luigidev.himnosycorosmiepiadmin.form.ui.FormScreen
 import com.luigidev.himnosycorosmiepiadmin.home.ui.HomeScreen
@@ -33,7 +34,15 @@ class MainActivity : ComponentActivity() {
                         navController = navigationController,
                         startDestination = Routes.HomeScreen.route
                     ) {
-                        composable(Routes.FormScreen.route) { FormScreen(navigationController) }
+                        composable(
+                            Routes.FormScreen.route,
+                            arguments = listOf(navArgument("id") { defaultValue = "" })
+                        ) { backStackEntry ->
+                            FormScreen(
+                                navigationController,
+                                backStackEntry.arguments?.getString("id").orEmpty()
+                            )
+                        }
                         composable(Routes.HomeScreen.route) { HomeScreen(navigationController) }
                     }
 

@@ -9,7 +9,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.ViewAgenda
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
@@ -21,7 +26,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -33,12 +40,14 @@ import com.luigidev.himnosycorosmiepiadmin.R
 import com.luigidev.himnosycorosmiepiadmin.core.Routes
 import com.luigidev.himnosycorosmiepiadmin.core.Title
 import com.luigidev.himnosycorosmiepiadmin.home.domain.models.Choir
+import com.luigidev.himnosycorosmiepiadmin.home.ui.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeSuccess(
     navigationController: NavHostController,
-    choirs: List<Choir?>
+    choirs: List<Choir?>,
+    homeViewModel: HomeViewModel
 ) {
     val listState = rememberLazyListState()
     val expandedFab by remember {
@@ -65,7 +74,7 @@ fun HomeSuccess(
             item { Title(textTitle = "Choirs") }
             items(choirs) { choir ->
                 if (choir != null) {
-                    ChoirItem(choir)
+                    ChoirItem(choir, navigationController)
                 }
             }
 
@@ -76,7 +85,7 @@ fun HomeSuccess(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChoirItem(choirData: Choir) {
+fun ChoirItem(choirData: Choir, navigationController: NavHostController) {
     ListItem(
         headlineText = {
             Text(
@@ -112,10 +121,45 @@ fun ChoirItem(choirData: Choir) {
 
         },
         trailingContent = {
-            TextButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "")
-            }
+            Menu(navigationController, choirData.id)
         }
     )
+}
+
+@Composable
+fun Menu(navigationController: NavHostController, id: String) {
+    var expanded by remember { mutableStateOf(false) }
+    TextButton(onClick = { expanded = true }) {
+        Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "")
+    }
+    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        DropdownMenuItem(
+            text = { Text(text = "View") },
+            onClick = { /*TODO*/ },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.ViewAgenda,
+                    contentDescription = ""
+                )
+            })
+        DropdownMenuItem(
+            text = { Text(text = "Edit") },
+            onClick = { navigationController.navigate(Routes.FormScreen.createRoute(id)) },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Edit,
+                    contentDescription = ""
+                )
+            })
+        DropdownMenuItem(
+            text = { Text(text = "Delete") },
+            onClick = { /*TODO*/ },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Remove,
+                    contentDescription = ""
+                )
+            })
+    }
 }
 

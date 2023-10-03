@@ -16,4 +16,15 @@ class HomeService @Inject constructor(private val client: HomeClient) {
         }
     }
 
+    fun deleteChoir(
+        id: String,
+        apiState: (HomeResultAPI<String>) -> Unit) = client.deleteChoir(id, apiState)
+
+    fun deleteChoirWithImage(
+        id: String,
+        storagePath: String,
+        apiState: (HomeResultAPI<String>) -> Unit
+    ) = client.deleteChoirWithImage(id, storagePath, apiState)
+
+
 }

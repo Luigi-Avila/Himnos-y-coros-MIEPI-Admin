@@ -9,5 +9,6 @@ fun ChoirDTO.toDomain(): Choir =
         choirNumber = this.choirNumber ?: 0,
         title = this.title ?: "",
         lyrics = this.lyrics ?: "",
-        thumbnail = if (this.internetThumbnail.isNullOrEmpty()) this.localThumbnail else this.internetThumbnail
+        thumbnail = if (this.internetThumbnail.isNullOrEmpty()) this.localThumbnail else this.internetThumbnail,
+        storagePath = if (this.internetThumbnail.isNullOrEmpty()) this.storagePath else null
     )

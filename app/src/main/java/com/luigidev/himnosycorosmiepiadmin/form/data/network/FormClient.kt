@@ -43,8 +43,9 @@ class FormClient @Inject constructor(
             val documentReference = db.collection(FirebaseCollections.CHOIRS.toString())
             documentReference.add(choir)
                 .addOnSuccessListener { documentData ->
+                    val storagePath = "images/${documentData.id}/${choir.localThumbnail?.lastPathSegment}"
                     val fileReference = storage
-                        .reference.child("images/${documentData.id}/${choir.localThumbnail?.lastPathSegment}")
+                        .reference.child(storagePath)
                     val uploadTask = choir.localThumbnail?.let { fileReference.putFile(it) }
                     uploadTask?.addOnProgressListener {
                         val progress =
@@ -53,7 +54,7 @@ class FormClient @Inject constructor(
                     }?.addOnSuccessListener { task ->
                         task.storage.downloadUrl.addOnSuccessListener { url ->
                             documentReference.document(documentData.id)
-                                .set(choir.copy(id = documentData.id, localThumbnail = url))
+                                .set(choir.copy(id = documentData.id, localThumbnail = url, storagePath = storagePath))
                                 .addOnSuccessListener {
                                     state.invoke(ResultAPI.Success("Success"))
                                 }

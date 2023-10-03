@@ -9,10 +9,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.ViewAgenda
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,6 +24,8 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -28,6 +33,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -41,6 +47,8 @@ import com.luigidev.himnosycorosmiepiadmin.core.Routes
 import com.luigidev.himnosycorosmiepiadmin.core.Title
 import com.luigidev.himnosycorosmiepiadmin.home.domain.models.Choir
 import com.luigidev.himnosycorosmiepiadmin.home.ui.HomeViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,6 +63,9 @@ fun HomeSuccess(
             listState.firstVisibleItemIndex == 0
         }
     }
+    val snackBarHostState = remember { SnackbarHostState() }
+    val snackBarScope = rememberCoroutineScope()
+
     Scaffold(
         floatingActionButton = {
             ExtendedFloatingActionButton(
@@ -65,6 +76,7 @@ fun HomeSuccess(
             )
         },
         floatingActionButtonPosition = FabPosition.End,
+        snackbarHost = { SnackbarHost(snackBarHostState) }
     ) {
         LazyColumn(
             state = listState, modifier = Modifier
@@ -74,7 +86,13 @@ fun HomeSuccess(
             item { Title(textTitle = "Choirs") }
             items(choirs) { choir ->
                 if (choir != null) {
-                    ChoirItem(choir, navigationController)
+                    ChoirItem(
+                        choir,
+                        navigationController,
+                        homeViewModel,
+                        snackBarScope,
+                        snackBarHostState
+                    )
                 }
             }
 
@@ -85,7 +103,13 @@ fun HomeSuccess(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChoirItem(choirData: Choir, navigationController: NavHostController) {
+fun ChoirItem(
+    choirData: Choir,
+    navigationController: NavHostController,
+    homeViewModel: HomeViewModel,
+    snackBarScope: CoroutineScope,
+    snackBarHostState: SnackbarHostState
+) {
     ListItem(
         headlineText = {
             Text(
@@ -121,14 +145,21 @@ fun ChoirItem(choirData: Choir, navigationController: NavHostController) {
 
         },
         trailingContent = {
-            Menu(navigationController, choirData.id)
+            Menu(navigationController, choirData, homeViewModel, snackBarScope, snackBarHostState)
         }
     )
 }
 
 @Composable
-fun Menu(navigationController: NavHostController, id: String) {
+fun Menu(
+    navigationController: NavHostController,
+    choirData: Choir,
+    homeViewModel: HomeViewModel,
+    snackBarScope: CoroutineScope,
+    snackBarHostState: SnackbarHostState
+) {
     var expanded by remember { mutableStateOf(false) }
+    var showAlert by remember { mutableStateOf(false) }
     TextButton(onClick = { expanded = true }) {
         Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "")
     }
@@ -144,7 +175,7 @@ fun Menu(navigationController: NavHostController, id: String) {
             })
         DropdownMenuItem(
             text = { Text(text = "Edit") },
-            onClick = { navigationController.navigate(Routes.FormScreen.createRoute(id)) },
+            onClick = { navigationController.navigate(Routes.FormScreen.createRoute(choirData.id)) },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Edit,
@@ -153,13 +184,47 @@ fun Menu(navigationController: NavHostController, id: String) {
             })
         DropdownMenuItem(
             text = { Text(text = "Delete") },
-            onClick = { /*TODO*/ },
+            onClick = { showAlert = true },
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Filled.Remove,
+                    imageVector = Icons.Filled.Delete,
                     contentDescription = ""
                 )
             })
     }
+    if (showAlert) {
+        AlertDialog(
+            onDismissRequest = { showAlert = false },
+            confirmButton = {
+                Button(onClick = {
+                    showAlert = false
+                    homeViewModel.deleteChoir(choirData) { result ->
+                        var message = "Something went wrong"
+                        if (result) {
+                            message = "Choir deleted successfully"
+                        }
+                        snackBarScope.launch {
+                            snackBarHostState.showSnackbar(
+                                message
+                            )
+                        }
+
+                    }
+                }) {
+                    Text(text = "Remove")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showAlert = false }) {
+                    Text(text = "Cancel")
+                }
+            },
+            icon = { Icon(imageVector = Icons.Outlined.Delete, contentDescription = "") },
+            title = { Text(text = "Permanently delete?") },
+            text = { Text(text = "If you remove this you cannot see it anymore") }
+        )
+    }
+
 }
+
 

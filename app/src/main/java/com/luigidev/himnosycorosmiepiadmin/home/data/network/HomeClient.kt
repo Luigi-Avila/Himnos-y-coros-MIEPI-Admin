@@ -13,7 +13,7 @@ class HomeClient @Inject constructor(
     private val storage: FirebaseStorage
 ) {
 
-    fun getChoirs(apiState: (HomeResultAPI<List<ChoirDTO?>>) -> Unit) {
+    fun getChoirs(apiState: (HomeResultAPI<List<ChoirDTO>>) -> Unit) {
         val reference = db.collection(FirebaseCollections.CHOIRS.toString())
         try {
             reference.get().addOnCompleteListener { task ->
@@ -22,7 +22,7 @@ class HomeClient @Inject constructor(
                         HomeResultAPI
                             .Success(
                                 task.result.documents.map {
-                                    it.toObject()
+                                    it.toObject() ?: ChoirDTO()
                                 }
                             )
                     )

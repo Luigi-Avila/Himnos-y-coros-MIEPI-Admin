@@ -7,4 +7,18 @@ data class Choir(
     val lyrics: String,
     val thumbnail: String?,
     val storagePath: String?
-)
+){
+    fun doesMatchSearchQuery(query: String): Boolean{
+        val matchingCombinations = listOf(
+            "${title.first()}",
+            "$title $lyrics",
+            "$title $choirNumber",
+            "$title$choirNumber",
+            "${title.first()} ${lyrics.first()}"
+        )
+
+        return matchingCombinations.any{
+            it.contains(query, ignoreCase = true)
+        }
+    }
+}

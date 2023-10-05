@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class HomeRepositoryImp @Inject constructor(private val service: HomeService) : IHomeRepository {
 
-    override fun getChoirs(apiState: (HomeResultAPI<List<Choir?>>) -> Unit) =
+    override fun getChoirs(apiState: (HomeResultAPI<List<Choir>>) -> Unit) =
         service.getChoirs(apiState)
 
     override fun deleteChoir(id: String, apiState: (HomeResultAPI<String>) -> Unit) =

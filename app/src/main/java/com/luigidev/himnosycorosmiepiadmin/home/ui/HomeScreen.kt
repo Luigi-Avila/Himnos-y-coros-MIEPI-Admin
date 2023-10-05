@@ -4,7 +4,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.luigidev.himnosycorosmiepiadmin.home.domain.models.Choir
 import com.luigidev.himnosycorosmiepiadmin.home.domain.state.HomeUIState
 import com.luigidev.himnosycorosmiepiadmin.home.ui.states.HomeSuccess
 
@@ -25,7 +24,6 @@ fun HomeScreen(navigationController: NavHostController) {
         is HomeUIState.Success -> {
             HomeSuccess(
                 navigationController = navigationController,
-                (homeViewModel.homeUIState as HomeUIState.Success<List<Choir?>>).data,
                 homeViewModel
             )
         }

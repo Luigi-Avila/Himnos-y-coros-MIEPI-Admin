@@ -58,7 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.luigidev.himnosycorosmiepiadmin.R
-import com.luigidev.himnosycorosmiepiadmin.core.Routes
+import com.luigidev.himnosycorosmiepiadmin.navigation.Routes
 import com.luigidev.himnosycorosmiepiadmin.home.domain.models.Choir
 import com.luigidev.himnosycorosmiepiadmin.home.ui.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -127,43 +127,6 @@ fun HomeSuccess(
             }
         }
 
-
-//        LazyColumn(
-//            state = listState,
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(paddingValues),
-//            horizontalAlignment = Alignment.CenterHorizontally
-//        ) {
-//
-//            if (choirs.isEmpty() && searchText.isBlank()) {
-//                item {
-//                    Column(Modifier.fillMaxSize().background(Color.Blue)) {
-//                        Text(text = "Not choirs added")
-//                        Image(
-//                            painter = painterResource(id = R.drawable.without_image),
-//                            contentDescription = ""
-//                        )
-//                    }
-//                }
-//            } else {
-//                item { MySearchBar(homeViewModel, searchText) }
-//                if (searchText.isNotBlank() && choirs.isEmpty()) {
-//                    item { ResultsNotFound(searchText) }
-//                } else {
-//                    items(choirs) { choir ->
-//                        ChoirItem(
-//                            choir,
-//                            navigationController,
-//                            homeViewModel,
-//                            snackBarScope,
-//                            snackBarHostState
-//                        )
-//                    }
-//                }
-//            }
-//
-//        }
     }
 
 }

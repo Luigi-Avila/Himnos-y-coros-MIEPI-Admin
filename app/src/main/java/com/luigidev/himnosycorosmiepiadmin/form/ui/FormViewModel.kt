@@ -11,7 +11,7 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.luigidev.himnosycorosmiepiadmin.core.ResultAPI
-import com.luigidev.himnosycorosmiepiadmin.core.Routes
+import com.luigidev.himnosycorosmiepiadmin.navigation.Routes
 import com.luigidev.himnosycorosmiepiadmin.form.domain.models.Choir
 import com.luigidev.himnosycorosmiepiadmin.form.domain.state.FormUIState
 import com.luigidev.himnosycorosmiepiadmin.form.domain.usecase.GetChoirByIdUseCase

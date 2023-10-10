@@ -17,10 +17,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Save
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -82,7 +84,7 @@ fun FormFillOutState(
             TitleField(formViewModel)
             LyricsField(formViewModel)
             NumberField(formViewModel)
-            if (formViewModel.mThumbnailUri == null) {
+            if (formViewModel.mThumbnailUri == null && formViewModel.mStoragePath.isBlank()) {
                 ThumbnailField(formViewModel)
             }
             ThumbnailPreview(
@@ -109,36 +111,39 @@ fun FormFillOutState(
 @Composable
 fun ThumbnailPreview(modifier: Modifier, formViewModel: FormViewModel) {
 
-
     if (formViewModel.isThumbnailOnScreen) {
         if (formViewModel.mThumbnailUri == null) {
-            ImageFromInternet(
-                url = formViewModel.mThumbnailURL,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .aspectRatio(16f / 9f)
-                    .clip(MaterialTheme.shapes.large)
-            )
-        } else {
-            formViewModel.mThumbnailUri?.let {
-                ImageFromLocal(
-                    uri = it, modifier = Modifier.padding(
-                        top = dimensionResource(
-                            id = R.dimen.common_min_padding
-                        )
-                    )
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                ImageFromInternet(
+                    url = formViewModel.mThumbnailURL,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .aspectRatio(16f / 9f)
+                        .clip(MaterialTheme.shapes.large)
                 )
-            }
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = dimensionResource(id = R.dimen.common_min_padding)),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                IconButton(onClick = { formViewModel.cancelThumbnail() }) {
-                    Icon(imageVector = Icons.Outlined.Close, contentDescription = "")
+                if (formViewModel.mStoragePath.isNotBlank()) {
+                    Button(onClick = { formViewModel.deleteImageFromStorage() }) {
+                        Icon(imageVector = Icons.Outlined.Delete, contentDescription = "")
+                        Text(text = "Delete Image")
+                    }
                 }
             }
+        } else {
+            formViewModel.mThumbnailUri?.let {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    ImageFromLocal(
+                        uri = it, modifier = Modifier.padding(
+                            top = dimensionResource(
+                                id = R.dimen.common_min_padding
+                            )
+                        )
+                    )
+                    IconButton(onClick = { formViewModel.cancelThumbnail() }) {
+                        Icon(imageVector = Icons.Outlined.Close, contentDescription = "")
+                    }
+                }
+            }
+
         }
     } else {
         Card(

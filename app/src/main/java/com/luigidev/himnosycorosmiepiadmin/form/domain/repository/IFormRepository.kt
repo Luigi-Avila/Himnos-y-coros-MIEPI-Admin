@@ -15,4 +15,6 @@ interface IFormRepository {
     fun updateChoir(id: String, choir: Choir, resultState: (ResultAPI<String>) -> Unit)
 
     fun updateChoirWithImage(id: String, choir: Choir, uploadingState: (ResultAPI<String>) -> Unit)
+
+    fun deleteImageFromStorage(id: String, storagePath: String, resultState: (ResultAPI<String>) -> Unit)
 }

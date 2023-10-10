@@ -43,7 +43,8 @@ class FormClient @Inject constructor(
             val documentReference = db.collection(FirebaseCollections.CHOIRS.toString())
             documentReference.add(choir)
                 .addOnSuccessListener { documentData ->
-                    val storagePath = "images/${documentData.id}/${choir.localThumbnail?.lastPathSegment}"
+                    val storagePath =
+                        "images/${documentData.id}/${choir.localThumbnail?.lastPathSegment}"
                     val fileReference = storage
                         .reference.child(storagePath)
                     val uploadTask = choir.localThumbnail?.let { fileReference.putFile(it) }
@@ -54,7 +55,13 @@ class FormClient @Inject constructor(
                     }?.addOnSuccessListener { task ->
                         task.storage.downloadUrl.addOnSuccessListener { url ->
                             documentReference.document(documentData.id)
-                                .set(choir.copy(id = documentData.id, localThumbnail = url, storagePath = storagePath))
+                                .set(
+                                    choir.copy(
+                                        id = documentData.id,
+                                        localThumbnail = url,
+                                        storagePath = storagePath
+                                    )
+                                )
                                 .addOnSuccessListener {
                                     state.invoke(ResultAPI.Success("Success"))
                                 }
@@ -95,11 +102,12 @@ class FormClient @Inject constructor(
 
     fun updateChoirWithImage(id: String, choir: Choir, apiState: (ResultAPI<String>) -> Unit) {
         try {
-            val documentReference = db.collection(FirebaseCollections.CHOIRS.toString()).document(id)
+            val documentReference =
+                db.collection(FirebaseCollections.CHOIRS.toString()).document(id)
             documentReference.set(choir)
                 .addOnSuccessListener {
-                    val fileReference = storage
-                        .reference.child("images/${id}/${choir.localThumbnail?.lastPathSegment}")
+                    val storagePath = "images/${id}/${choir.localThumbnail?.lastPathSegment}"
+                    val fileReference = storage.reference.child(storagePath)
                     val uploadTask = choir.localThumbnail?.let { fileReference.putFile(it) }
                     uploadTask?.addOnProgressListener {
                         val progress =
@@ -107,8 +115,12 @@ class FormClient @Inject constructor(
                         apiState.invoke(ResultAPI.Loading(progress))
                     }?.addOnSuccessListener { task ->
                         task.storage.downloadUrl.addOnSuccessListener { url ->
-                            documentReference.update("localThumbnail", url)
-                                .addOnSuccessListener {
+                            documentReference.update(
+                                mapOf(
+                                    "localThumbnail" to url,
+                                    "storagePath" to storagePath
+                                )
+                            ).addOnSuccessListener {
                                     apiState.invoke(ResultAPI.Success("Success"))
                                 }
                         }
@@ -117,6 +129,31 @@ class FormClient @Inject constructor(
         } catch (e: Exception) {
             Log.i("CLIENT", "SOMETHING went wrong")
             apiState.invoke(ResultAPI.Error("Something went wrong"))
+        }
+    }
+
+    fun deleteImageFromStorage(
+        documentId: String,
+        filePath: String,
+        resultApi: (ResultAPI<String>) -> Unit
+    ) {
+        try {
+            val fileReference = storage.reference.child(filePath)
+            fileReference.delete().addOnSuccessListener {
+                val documentReference = db.collection(FirebaseCollections.CHOIRS.toString())
+                    .document(documentId)
+
+                documentReference.update(
+                    mapOf(
+                        "localThumbnail" to null,
+                        "storagePath" to null
+                    )
+                ).addOnSuccessListener {
+                    resultApi.invoke(ResultAPI.Success("Success"))
+                }
+            }
+        } catch (e: Exception) {
+            resultApi.invoke(ResultAPI.Error(e.message.toString()))
         }
     }
 

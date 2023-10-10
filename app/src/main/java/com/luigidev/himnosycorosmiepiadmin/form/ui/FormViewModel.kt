@@ -11,12 +11,13 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.luigidev.himnosycorosmiepiadmin.core.ResultAPI
-import com.luigidev.himnosycorosmiepiadmin.navigation.Routes
 import com.luigidev.himnosycorosmiepiadmin.form.domain.models.Choir
 import com.luigidev.himnosycorosmiepiadmin.form.domain.state.FormUIState
+import com.luigidev.himnosycorosmiepiadmin.form.domain.usecase.DeleteChoirImageUseCase
 import com.luigidev.himnosycorosmiepiadmin.form.domain.usecase.GetChoirByIdUseCase
 import com.luigidev.himnosycorosmiepiadmin.form.domain.usecase.UpdateChoirUseCase
 import com.luigidev.himnosycorosmiepiadmin.form.domain.usecase.UploadChoirUseCase
+import com.luigidev.himnosycorosmiepiadmin.navigation.Routes
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
@@ -29,7 +30,8 @@ import javax.inject.Inject
 class FormViewModel @Inject constructor(
     private val uploadChoirUseCase: UploadChoirUseCase,
     private val getChoirByIdUseCase: GetChoirByIdUseCase,
-    private val updateChoirUseCase: UpdateChoirUseCase
+    private val updateChoirUseCase: UpdateChoirUseCase,
+    private val deleteChoirImageUseCase: DeleteChoirImageUseCase
 ) :
     ViewModel() {
     internal var resultState: FormUIState by mutableStateOf(FormUIState.FillOut)
@@ -82,6 +84,8 @@ class FormViewModel @Inject constructor(
     internal var mThumbnailUri: Uri? by mutableStateOf(null)
         private set
 
+    internal var mStoragePath: String by mutableStateOf("")
+        private set
 
     private fun formatText() {
         mTitle = mTitle.trim()
@@ -100,9 +104,10 @@ class FormViewModel @Inject constructor(
                 lyrics = mLyrics,
                 choirNumber = mNumber.toInt(),
                 localThumbnail = mThumbnailUri,
-                internetThumbnail = mThumbnailURL,
+                internetThumbnail = mThumbnailURL.ifBlank { null },
                 video = mVideoUrl
             )
+            Log.i("VIEWMODEL", "CHOIR FROM VIEWMODEL $choir")
             resultState = FormUIState.Loading
             if (mEditMode) {
                 updateChoir(mChoirId, choir)
@@ -204,7 +209,6 @@ class FormViewModel @Inject constructor(
             isThumbnailOnScreen = false
             isThumbnailUrlInvalid = true
         }
-
     }
 
     fun clearThumbnailText() {
@@ -284,10 +288,11 @@ class FormViewModel @Inject constructor(
                         mThumbnailURL = this.thumbnail ?: ""
                         mVideoUrl = this.video ?: ""
                         mChoirId = this.id
+                        mStoragePath = this.storagePath ?: ""
                     }
                     Log.i(
                         "VIEWMODEL",
-                        "THUMBAIL ${mThumbnailURL.isNotEmpty()} VIDEO ${mVideoUrl.isNotEmpty()}"
+                        "THUMBAIL ${mThumbnailURL.isNotEmpty()} VIDEO ${mVideoUrl.isNotEmpty()} STORAGE PATH ${mStoragePath.isNotBlank()}"
                     )
                     if (mThumbnailURL.isNotEmpty()) {
                         setPreviewThumbnail()
@@ -296,6 +301,23 @@ class FormViewModel @Inject constructor(
                         previewVideo()
                     }
 
+                }
+            }
+        }
+    }
+
+    fun deleteImageFromStorage(){
+        Log.i("VIEWMODEL", "Delete from storage $mStoragePath")
+        resultState = FormUIState.Loading
+        deleteChoirImageUseCase(mChoirId, mStoragePath){ result ->
+            when(result){
+                is ResultAPI.Error -> resultState = FormUIState.Error(result.message)
+                is ResultAPI.Loading -> resultState = FormUIState.Loading
+                is ResultAPI.Success -> {
+                    resultState = FormUIState.FillOut
+                    mStoragePath = ""
+                    mThumbnailURL = ""
+                    isThumbnailOnScreen = false
                 }
             }
         }

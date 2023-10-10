@@ -34,4 +34,10 @@ class FormRepositoryImp @Inject constructor(private val service: FormService) : 
         choir: Choir,
         uploadingState: (ResultAPI<String>) -> Unit
     ) = service.updateChoirWithImage(id, choir, uploadingState)
+
+    override fun deleteImageFromStorage(
+        id: String,
+        storagePath: String,
+        resultState: (ResultAPI<String>) -> Unit
+    ) = service.deleteImageFromStorage(id, storagePath, resultState)
 }

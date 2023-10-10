@@ -60,6 +60,8 @@ class HomeClient @Inject constructor(
                     .addOnSuccessListener {
                         apiState.invoke(HomeResultAPI.Success("Success"))
                     }
+            }.addOnFailureListener {
+                apiState.invoke(HomeResultAPI.Error(it.message.toString()))
             }
         } catch (e: Exception) {
             apiState.invoke(HomeResultAPI.Error(e.message.toString()))

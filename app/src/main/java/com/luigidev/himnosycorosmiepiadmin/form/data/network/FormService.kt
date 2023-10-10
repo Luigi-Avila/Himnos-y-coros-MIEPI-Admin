@@ -46,4 +46,10 @@ class FormService @Inject constructor(private val client: FormClient) {
         apiState: (ResultAPI<String>) -> Unit
     ) = client.updateChoirWithImage(id, choir, apiState)
 
+    fun deleteImageFromStorage(
+        id: String,
+        filePath: String,
+        resultApi: (ResultAPI<String>) -> Unit
+    ) = client.deleteImageFromStorage(id, filePath, resultApi)
+
 }

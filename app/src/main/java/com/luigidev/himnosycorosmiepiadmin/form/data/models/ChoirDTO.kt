@@ -6,6 +6,7 @@ data class ChoirDTO(
     val lyrics: String? = null,
     val internetThumbnail: String? = null,
     val localThumbnail: String? = null,
+    val storagePath: String? = null,
     val video: String? = null,
     val choirNumber: Int? = null
 )

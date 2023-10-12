@@ -1,9 +1,9 @@
 package com.luigidev.himnosycorosmiepiadmin.core.di
 
-import com.luigidev.himnosycorosmiepiadmin.form.data.FormRepositoryImp
-import com.luigidev.himnosycorosmiepiadmin.form.domain.repository.IFormRepository
-import com.luigidev.himnosycorosmiepiadmin.home.data.HomeRepositoryImp
-import com.luigidev.himnosycorosmiepiadmin.home.domain.repository.IHomeRepository
+import com.luigidev.himnosycorosmiepiadmin.features.form.data.FormRepositoryImp
+import com.luigidev.himnosycorosmiepiadmin.features.form.domain.repository.IFormRepository
+import com.luigidev.himnosycorosmiepiadmin.features.home.data.HomeRepositoryImp
+import com.luigidev.himnosycorosmiepiadmin.features.home.domain.repository.IHomeRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

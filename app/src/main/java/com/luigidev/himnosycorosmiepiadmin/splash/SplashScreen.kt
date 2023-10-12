@@ -40,7 +40,13 @@ fun Splash() {
 
     Box(
         Modifier
-            .background(if (isSystemInDarkTheme()) Color.Black else Purple40)
+            .then(
+                if (isSystemInDarkTheme()){
+                    Modifier.background(Color.Black)
+                } else {
+                    Modifier.background(Purple40)
+                }
+            )
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {

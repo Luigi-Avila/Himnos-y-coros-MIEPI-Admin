@@ -209,14 +209,14 @@ fun ChoirItem(
     snackBarHostState: SnackbarHostState
 ) {
     ListItem(
-        headlineText = {
+        headlineContent = {
             Text(
                 text = choirData.title,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
         },
-        supportingText = {
+        supportingContent = {
             Text(
                 text = choirData.lyrics,
                 maxLines = 2,

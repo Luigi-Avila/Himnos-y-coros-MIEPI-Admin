@@ -1,0 +1,77 @@
+[versions]
+#Plugins
+androidGradlePlugin = "8.1.2"
+androidLibraryPlugin = "8.1.2"
+googleServices = "4.4.0"
+jetBrainsPlugin = "1.9.10"
+kspPlugin = "1.9.10-1.0.13"
+hiltPlugin = "2.48.1"
+
+
+#Libraries
+core-ktx-version = "1.12.0"
+kotlin-bom-version = "1.9.10"
+lifecycle-version = "2.6.2"
+activity-compose-version = "1.8.0"
+compose-bom-version = "2023.10.01"
+youtube-player-version = "12.1.0"
+coil-version = "2.4.0"
+firebase-bom-version = "32.4.0"
+hilt-version = "2.48.1"
+hilt-navigation-compose-version = "1.0.0"
+activity-ktx-version = "1.8.0"
+lottie-compose-version = "6.1.0"
+junit-version = "4.13.2"
+junit-ext-version = "1.1.5"
+espresso-version = "3.5.1"
+navigation-compose-version = "2.7.4"
+
+
+[libraries]
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx-version" }
+google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }
+kotlin-bom = { group = "org.jetbrains.kotlin", name = "kotlin-bom", version.ref = "kotlin-bom-version" }
+lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-version" }
+activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose-version" }
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom-version" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-material = { group = "androidx.compose.material3", name = "material3" }
+compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
+compose-material-icons = { group = "androidx.compose.material", name = "material-icons-extended" }
+navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation-compose-version" }
+youtube-player = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", name = "core", version.ref = "youtube-player-version" }
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil-version" }
+firebase-bom-ktx = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom-version" }
+firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt-version" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navigation-compose-version" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt-version" }
+#for pickVisualMedia contract
+activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity-ktx-version" }
+lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottie-compose-version" }
+
+# test
+junit = { group = "junit", name = "junit", version.ref = "junit-version" }
+junit-ext = { group = "androidx.test.ext", name = "junit", version.ref = "junit-ext-version" }
+espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-version" }
+junit-ui = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+compose-test-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+compose-test-ui-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+
+[bundles]
+compose = ["compose-ui", "compose-ui-graphics", "compose-ui-tooling-preview", "compose-material", "compose-runtime-livedata", "compose-material-icons", "navigation-compose", "activity-compose"]
+firebase = ["firebase-firestore-ktx", "firebase-storage-ktx"]
+
+#Test
+test-android-implementation = ["junit-ext", "espresso", "junit-ui"]
+test-debug-implementation = ["compose-test-ui-tooling", "compose-test-ui-manifest"]
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidLibraryPlugin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "jetBrainsPlugin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "kspPlugin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltPlugin" }

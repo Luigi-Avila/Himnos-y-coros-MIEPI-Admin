@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Himnos y coros MIEPI Admin"
-include ':app'
+include(":app")

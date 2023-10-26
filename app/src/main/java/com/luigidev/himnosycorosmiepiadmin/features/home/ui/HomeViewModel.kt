@@ -20,82 +20,84 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val getChoirsUseCase: GetChoirsUseCase,
-    private val deleteChoirUseCase: DeleteChoirUseCase
-) :
+class HomeViewModel
+    @Inject
+    constructor(
+        private val getChoirsUseCase: GetChoirsUseCase,
+        private val deleteChoirUseCase: DeleteChoirUseCase,
+    ) :
     ViewModel() {
+        internal var homeUIState: HomeUIState by mutableStateOf(HomeUIState.Loading)
+            private set
 
-    internal var homeUIState: HomeUIState by mutableStateOf(HomeUIState.Loading)
-        private set
-
-    private val _searchText = MutableStateFlow("")
-    val searchText = _searchText.asStateFlow()
+        private val _searchText = MutableStateFlow("")
+        val searchText = _searchText.asStateFlow()
 
 //    private val _isSearching = MutableStateFlow(true)
 //    val isSearching = _isSearching.asStateFlow()
 
-    private val _choirs = MutableStateFlow(emptyList<Choir>())
-    val choirs = searchText
-        .combine(_choirs) { text, choirs ->
-            if (text.isBlank()) {
-                choirs
-            } else {
-                choirs.filter {
-                    it.doesMatchSearchQuery(text)
-                }
-            }
-        }.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            _choirs.value
-        )
+        private val _choirs = MutableStateFlow(emptyList<Choir>())
+        val choirs =
+            searchText
+                .combine(_choirs) { text, choirs ->
+                    if (text.isBlank()) {
+                        choirs
+                    } else {
+                        choirs.filter {
+                            it.doesMatchSearchQuery(text)
+                        }
+                    }
+                }.stateIn(
+                    viewModelScope,
+                    SharingStarted.WhileSubscribed(5000),
+                    _choirs.value,
+                )
 
-    init {
-        getChoirs()
-    }
-
-    private fun getChoirs() {
-        getChoirsUseCase { result ->
-            when (result) {
-                is HomeResultAPI.Error -> {
-                    homeUIState = HomeUIState.Error(result.message)
-                }
-
-                is HomeResultAPI.Success -> {
-                    println("Result value ${result.data}")
-                    _choirs.value = result.data
-                    homeUIState = HomeUIState.Success
-                }
-            }
+        init {
+            getChoirs()
         }
-    }
 
-    fun deleteChoir(choirData: Choir, showSnackbar: (Boolean) -> Unit) {
-        Log.i("VIEWMODEL", "DELETE CHOIR $choirData")
-        //Refactor this for optimization
-        deleteChoirUseCase(choirData) { result ->
-            when (result) {
-                is HomeResultAPI.Error -> {
-                    showSnackbar(false)
-                }
+        private fun getChoirs() {
+            getChoirsUseCase { result ->
+                when (result) {
+                    is HomeResultAPI.Error -> {
+                        homeUIState = HomeUIState.Error(result.message)
+                    }
 
-                is HomeResultAPI.Success -> {
-                    getChoirs()
-                    showSnackbar(true)
+                    is HomeResultAPI.Success -> {
+                        println("Result value ${result.data}")
+                        _choirs.value = result.data
+                        homeUIState = HomeUIState.Success
+                    }
                 }
             }
         }
 
+        fun deleteChoir(
+            choirData: Choir,
+            showSnackbar: (Boolean) -> Unit,
+        ) {
+            Log.i("VIEWMODEL", "DELETE CHOIR $choirData")
+            // Refactor this for optimization
+            deleteChoirUseCase(choirData) { result ->
+                when (result) {
+                    is HomeResultAPI.Error -> {
+                        showSnackbar(false)
+                    }
+
+                    is HomeResultAPI.Success -> {
+                        getChoirs()
+                        showSnackbar(true)
+                    }
+                }
+            }
+        }
+
+        fun onSearchTextChanged(text: String) {
+            _searchText.value = text
+        }
+
+        fun clearSearchText() {
+            _searchText.value = ""
+        }
     }
-
-    fun onSearchTextChanged(text: String) {
-        _searchText.value = text
-    }
-
-    fun clearSearchText(){
-        _searchText.value = ""
-    }
-
-
-}

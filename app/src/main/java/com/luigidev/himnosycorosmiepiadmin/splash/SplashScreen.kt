@@ -24,8 +24,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(navController: NavController) {
-
-    LaunchedEffect(key1 = true){
+    LaunchedEffect(key1 = true) {
         delay(2000)
         navController.popBackStack()
         navController.navigate(Routes.HomeScreen.route)
@@ -35,20 +34,22 @@ fun SplashScreen(navController: NavController) {
 
 @Composable
 fun Splash() {
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.church_animation))
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(R.raw.church_animation),
+    )
     val progress by animateLottieCompositionAsState(composition = composition)
 
     Box(
         Modifier
             .then(
-                if (isSystemInDarkTheme()){
+                if (isSystemInDarkTheme()) {
                     Modifier.background(Color.Black)
                 } else {
                     Modifier.background(Purple40)
-                }
+                },
             )
             .fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         LottieAnimation(composition = composition, progress = { progress })
     }
@@ -65,4 +66,3 @@ fun SplashScreenPreview() {
 fun SplashScreenDarkPreview() {
     Splash()
 }
-

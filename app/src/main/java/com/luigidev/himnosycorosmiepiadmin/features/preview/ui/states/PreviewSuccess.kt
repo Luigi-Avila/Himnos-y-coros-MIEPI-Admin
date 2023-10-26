@@ -9,9 +9,11 @@ import androidx.compose.ui.graphics.Color
 import com.luigidev.himnosycorosmiepiadmin.features.preview.ui.PreviewViewModel
 
 @Composable
-fun PreviewSuccess(previewViewModel: PreviewViewModel, choirId: String){
-    Box(modifier = Modifier.fillMaxSize().background(Color.Red)){
-
+fun PreviewSuccess(
+    previewViewModel: PreviewViewModel,
+    choirId: String,
+) {
+    Box(modifier = Modifier.fillMaxSize().background(Color.Red)) {
     }
 //    AndroidView(factory = { previewViewModel.factoryVideo(it) })
 }

@@ -50,9 +50,8 @@ import com.luigidev.himnosycorosmiepiadmin.features.form.ui.FormViewModel
 @Composable
 fun FormFillOutState(
     formViewModel: FormViewModel,
-    navigationController: NavHostController
+    navigationController: NavHostController,
 ) {
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -66,20 +65,19 @@ fun FormFillOutState(
                     IconButton(onClick = { formViewModel.goToHome(navigationController) }) {
                         Icon(Icons.Outlined.ArrowBack, contentDescription = "Go back")
                     }
-                }
+                },
             )
         },
-
-        ) { paddingValues ->
+    ) { paddingValues ->
         Column(
             Modifier
                 .fillMaxSize()
                 .padding(
                     top = paddingValues.calculateTopPadding(),
                     start = dimensionResource(id = R.dimen.common_default_padding),
-                    end = dimensionResource(id = R.dimen.common_default_padding)
+                    end = dimensionResource(id = R.dimen.common_default_padding),
                 )
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
         ) {
             TitleField(formViewModel)
             LyricsField(formViewModel)
@@ -89,37 +87,38 @@ fun FormFillOutState(
             }
             ThumbnailPreview(
                 Modifier.padding(top = dimensionResource(id = R.dimen.common_min_padding)),
-                formViewModel
+                formViewModel,
             )
             VideoField(formViewModel)
             VideoPreview(
                 formViewModel,
                 Modifier.padding(
                     top = dimensionResource(id = R.dimen.common_min_padding),
-                    bottom = dimensionResource(
-                        id = R.dimen.common_default_padding
-                    )
-                )
+                    bottom =
+                        dimensionResource(
+                            id = R.dimen.common_default_padding,
+                        ),
+                ),
             )
-
         }
     }
-
-
 }
 
 @Composable
-fun ThumbnailPreview(modifier: Modifier, formViewModel: FormViewModel) {
-
+fun ThumbnailPreview(
+    modifier: Modifier,
+    formViewModel: FormViewModel,
+) {
     if (formViewModel.isThumbnailOnScreen) {
         if (formViewModel.mThumbnailUri == null) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 ImageFromInternet(
                     url = formViewModel.mThumbnailURL,
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .aspectRatio(16f / 9f)
-                        .clip(MaterialTheme.shapes.large)
+                    modifier =
+                        modifier
+                            .fillMaxWidth()
+                            .aspectRatio(16f / 9f)
+                            .clip(MaterialTheme.shapes.large),
                 )
                 if (formViewModel.mStoragePath.isNotBlank()) {
                     Button(onClick = { formViewModel.deleteImageFromStorage() }) {
@@ -132,32 +131,33 @@ fun ThumbnailPreview(modifier: Modifier, formViewModel: FormViewModel) {
             formViewModel.mThumbnailUri?.let {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     ImageFromLocal(
-                        uri = it, modifier = Modifier.padding(
-                            top = dimensionResource(
-                                id = R.dimen.common_min_padding
-                            )
-                        )
+                        uri = it,
+                        modifier =
+                            Modifier.padding(
+                                top =
+                                    dimensionResource(
+                                        id = R.dimen.common_min_padding,
+                                    ),
+                            ),
                     )
                     IconButton(onClick = { formViewModel.cancelThumbnail() }) {
                         Icon(imageVector = Icons.Outlined.Close, contentDescription = "")
                     }
                 }
             }
-
         }
     } else {
         Card(
             modifier
                 .fillMaxWidth()
-                .aspectRatio(16f / 9f)
+                .aspectRatio(16f / 9f),
         ) {
             Column(
                 Modifier
                     .fillMaxSize()
                     .padding(dimensionResource(id = R.dimen.common_default_padding)),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-
+                verticalArrangement = Arrangement.Center,
             ) {
                 Icon(Icons.Outlined.PhotoLibrary, contentDescription = "")
             }
@@ -166,26 +166,28 @@ fun ThumbnailPreview(modifier: Modifier, formViewModel: FormViewModel) {
 }
 
 @Composable
-fun VideoPreview(formViewModel: FormViewModel, modifier: Modifier) {
+fun VideoPreview(
+    formViewModel: FormViewModel,
+    modifier: Modifier,
+) {
     if (formViewModel.isVideoPreviewOnScreen) {
         YoutubeVideo(
             videoId = formViewModel.mVideoId,
             modifier = modifier,
-            formViewModel = formViewModel
+            formViewModel = formViewModel,
         )
     } else {
         Card(
             modifier
                 .fillMaxWidth()
-                .aspectRatio(16f / 9f)
+                .aspectRatio(16f / 9f),
         ) {
             Column(
                 Modifier
                     .fillMaxSize()
                     .padding(dimensionResource(id = R.dimen.common_default_padding)),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-
+                verticalArrangement = Arrangement.Center,
             ) {
                 Icon(Icons.Outlined.PlayArrow, contentDescription = "")
             }
@@ -203,9 +205,10 @@ fun NumberField(formViewModel: FormViewModel) {
         onTextChanged = { formViewModel.onChangeNumber(it) },
         oneLine = true,
         maxLines = 1,
-        keyboardOptions = KeyboardOptions.Default.copy(
-            keyboardType = KeyboardType.Number
-        )
+        keyboardOptions =
+            KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number,
+            ),
     )
 }
 
@@ -217,7 +220,8 @@ fun LyricsField(formViewModel: FormViewModel) {
         isInvalid = formViewModel.isLyricsInvalid,
         supportTextError = "Invalid Lyrics",
         maxLines = 10,
-        onTextChanged = { formViewModel.onChangeLyrics(it) })
+        onTextChanged = { formViewModel.onChangeLyrics(it) },
+    )
 }
 
 @Composable
@@ -228,21 +232,22 @@ fun TitleField(formViewModel: FormViewModel) {
         isInvalid = formViewModel.isTitleInvalid,
         supportTextError = "Invalid title",
         maxLines = 2,
-        onTextChanged = { formViewModel.onChangeTitle(it) })
+        onTextChanged = { formViewModel.onChangeTitle(it) },
+    )
 }
 
 @Composable
 fun ThumbnailField(formViewModel: FormViewModel) {
-
-    val launcher = rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
-        if (uri != null) {
-            uri.path?.let {
-                println("Path: $it")
+    val launcher =
+        rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
+            if (uri != null) {
+                uri.path?.let {
+                    println("Path: $it")
+                }
+                println("Path URI: $uri")
+                formViewModel.setThumbnailPreview(uri)
             }
-            println("Path URI: $uri")
-            formViewModel.setThumbnailPreview(uri)
         }
-    }
 
     Row(verticalAlignment = Alignment.CenterVertically) {
         TextFieldForm(
@@ -253,9 +258,10 @@ fun ThumbnailField(formViewModel: FormViewModel) {
             isInvalid = formViewModel.isThumbnailUrlInvalid,
             modifier = Modifier.weight(1f),
             maxLines = 4,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done
-            ),
+            keyboardOptions =
+                KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done,
+                ),
             onClickTrailingIcon = { formViewModel.clearThumbnailText() },
             onTextChanged = { formViewModel.onChangeThumbnail(it) },
             keyboardActions = { formViewModel.setPreviewThumbnail() },
@@ -263,12 +269,12 @@ fun ThumbnailField(formViewModel: FormViewModel) {
         IconButton(onClick = { formViewModel.setPreviewThumbnail() }) {
             Icon(imageVector = Icons.Outlined.Refresh, contentDescription = "")
         }
-        IconButton(onClick = { launcher.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly)) }) {
+        IconButton(
+            onClick = { launcher.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly)) },
+        ) {
             Icon(imageVector = Icons.Outlined.PhotoLibrary, contentDescription = "")
         }
-
     }
-
 }
 
 @Composable
@@ -281,18 +287,23 @@ fun VideoField(formViewModel: FormViewModel) {
         supportTextError = "Invalid url",
         onClickTrailingIcon = { formViewModel.clearVideoText() },
         onTextChanged = { formViewModel.onChangeVideoUrl(it) },
-        keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Done
-        ),
+        keyboardOptions =
+            KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done,
+            ),
         keyboardActions = { formViewModel.previewVideo() },
-        maxLines = 4
+        maxLines = 4,
     )
 }
 
 @Composable
-fun YoutubeVideo(videoId: String, modifier: Modifier, formViewModel: FormViewModel) {
+fun YoutubeVideo(
+    videoId: String,
+    modifier: Modifier,
+    formViewModel: FormViewModel,
+) {
     AndroidView(
         modifier = modifier,
-        factory = { formViewModel.factoryVideo(it, videoId) }
+        factory = { formViewModel.factoryVideo(it, videoId) },
     )
 }

@@ -68,7 +68,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeSuccess(
     navigationController: NavHostController,
-    homeViewModel: HomeViewModel
+    homeViewModel: HomeViewModel,
 ) {
     val choirs by homeViewModel.choirs.collectAsState()
     val searchText by homeViewModel.searchText.collectAsState()
@@ -82,16 +82,16 @@ fun HomeSuccess(
     val snackBarHostState = remember { SnackbarHostState() }
     val snackBarScope = rememberCoroutineScope()
 
-    val scrollBehavior = TopAppBarDefaults
-        .exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-
+    val scrollBehavior =
+        TopAppBarDefaults
+            .exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MediumTopAppBar(
                 title = { Text(text = "Choirs", style = MaterialTheme.typography.headlineLarge) },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
             )
         },
         floatingActionButton = {
@@ -103,14 +103,14 @@ fun HomeSuccess(
             )
         },
         floatingActionButtonPosition = FabPosition.End,
-        snackbarHost = { SnackbarHost(snackBarHostState) }
+        snackbarHost = { SnackbarHost(snackBarHostState) },
     ) { paddingValues ->
 
         Column(
             Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (choirs.isEmpty() && searchText.isBlank()) {
                 Text(text = "There is no choirs")
@@ -122,13 +122,11 @@ fun HomeSuccess(
                     listState,
                     navigationController,
                     snackBarScope,
-                    snackBarHostState
+                    snackBarHostState,
                 )
             }
         }
-
     }
-
 }
 
 @Composable
@@ -152,13 +150,12 @@ fun ChoirList(
                     navigationController = navigationController,
                     homeViewModel = homeViewModel,
                     snackBarScope = snackBarScope,
-                    snackBarHostState = snackBarHostState
+                    snackBarHostState = snackBarHostState,
                 )
             }
         }
     }
 }
-
 
 @Composable
 fun ResultsNotFound(searchText: String) {
@@ -167,14 +164,13 @@ fun ResultsNotFound(searchText: String) {
             .fillMaxSize()
             .padding(top = dimensionResource(id = R.dimen.common_default_padding)),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(text = "No results for $searchText")
         Image(
             painter = painterResource(id = R.drawable.without_image),
-            contentDescription = ""
+            contentDescription = "",
         )
-
     }
 }
 
@@ -182,7 +178,7 @@ fun ResultsNotFound(searchText: String) {
 @Composable
 fun MySearchBar(
     homeViewModel: HomeViewModel,
-    searchText: String
+    searchText: String,
 ) {
     OutlinedTextField(
         value = searchText,
@@ -195,7 +191,7 @@ fun MySearchBar(
                     Icon(imageVector = Icons.Outlined.Close, contentDescription = "")
                 }
             }
-        }
+        },
     )
 }
 
@@ -206,21 +202,21 @@ fun ChoirItem(
     navigationController: NavHostController,
     homeViewModel: HomeViewModel,
     snackBarScope: CoroutineScope,
-    snackBarHostState: SnackbarHostState
+    snackBarHostState: SnackbarHostState,
 ) {
     ListItem(
         headlineContent = {
             Text(
                 text = choirData.title,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
         },
         supportingContent = {
             Text(
                 text = choirData.lyrics,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
         },
         leadingContent = {
@@ -229,22 +225,20 @@ fun ChoirItem(
                     model = choirData.thumbnail,
                     contentDescription = "",
                     modifier = Modifier.size(80.dp),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
                 )
             } else {
                 Image(
                     modifier = Modifier.size(80.dp),
                     painter = painterResource(id = R.drawable.without_image),
                     contentDescription = "",
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
                 )
-
             }
-
         },
         trailingContent = {
             Menu(navigationController, choirData, homeViewModel, snackBarScope, snackBarHostState)
-        }
+        },
     )
 }
 
@@ -254,7 +248,7 @@ fun Menu(
     choirData: Choir,
     homeViewModel: HomeViewModel,
     snackBarScope: CoroutineScope,
-    snackBarHostState: SnackbarHostState
+    snackBarHostState: SnackbarHostState,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var showAlert by remember { mutableStateOf(false) }
@@ -264,13 +258,18 @@ fun Menu(
     DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
         DropdownMenuItem(
             text = { Text(text = "View") },
-            onClick = { navigationController.navigate(Routes.PreviewScreen.createRoute(choirData.id)) },
+            onClick = {
+                navigationController.navigate(
+                    Routes.PreviewScreen.createRoute(choirData.id),
+                )
+            },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.ViewAgenda,
-                    contentDescription = ""
+                    contentDescription = "",
                 )
-            })
+            },
+        )
         DropdownMenuItem(
             text = { Text(text = "Edit") },
             onClick = {
@@ -280,18 +279,20 @@ fun Menu(
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Edit,
-                    contentDescription = ""
+                    contentDescription = "",
                 )
-            })
+            },
+        )
         DropdownMenuItem(
             text = { Text(text = "Delete") },
             onClick = { showAlert = true },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Delete,
-                    contentDescription = ""
+                    contentDescription = "",
                 )
-            })
+            },
+        )
     }
     if (showAlert) {
         AlertDialog(
@@ -307,10 +308,9 @@ fun Menu(
                         }
                         snackBarScope.launch {
                             snackBarHostState.showSnackbar(
-                                message
+                                message,
                             )
                         }
-
                     }
                 }) {
                     Text(text = "Remove")
@@ -323,10 +323,7 @@ fun Menu(
             },
             icon = { Icon(imageVector = Icons.Outlined.Delete, contentDescription = "") },
             title = { Text(text = "Permanently delete?") },
-            text = { Text(text = "If you remove this you cannot see it anymore") }
+            text = { Text(text = "If you remove this you cannot see it anymore") },
         )
     }
-
 }
-
-

@@ -5,7 +5,11 @@ import com.luigidev.himnosycorosmiepiadmin.features.form.domain.models.ChoirFill
 import com.luigidev.himnosycorosmiepiadmin.features.form.domain.repository.IFormRepository
 import javax.inject.Inject
 
-class GetChoirByIdUseCase @Inject constructor(private val repository: IFormRepository) {
-    operator fun invoke(id: String, resultState: (ResultAPI<ChoirFillOut>) -> Unit) =
-        repository.getChoirById(id, resultState)
-}
+class GetChoirByIdUseCase
+    @Inject
+    constructor(private val repository: IFormRepository) {
+        operator fun invoke(
+            id: String,
+            resultState: (ResultAPI<ChoirFillOut>) -> Unit,
+        ) = repository.getChoirById(id, resultState)
+    }

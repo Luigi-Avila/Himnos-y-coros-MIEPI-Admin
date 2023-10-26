@@ -13,20 +13,20 @@ import com.luigidev.himnosycorosmiepiadmin.features.form.ui.states.FormFillOutSt
 import com.luigidev.himnosycorosmiepiadmin.features.form.ui.states.FormInProgressState
 import com.luigidev.himnosycorosmiepiadmin.features.form.ui.states.FormSuccessState
 
-
 @Composable
-fun FormScreen(navigationController: NavHostController, choirId: String) {
-
+fun FormScreen(
+    navigationController: NavHostController,
+    choirId: String,
+) {
     val formViewModel = hiltViewModel<FormViewModel>()
 
     var editState by remember {
         mutableStateOf(choirId.isNotEmpty())
     }
-    if (editState){
+    if (editState) {
         formViewModel.getChoir(choirId)
         editState = false
     }
-
 
     when (formViewModel.resultState) {
         is FormUIState.Error -> {
@@ -49,6 +49,4 @@ fun FormScreen(navigationController: NavHostController, choirId: String) {
             FormInProgressState((formViewModel.resultState as FormUIState.InProgress).progress)
         }
     }
-
-
 }

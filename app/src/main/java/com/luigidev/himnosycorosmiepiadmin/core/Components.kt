@@ -40,9 +40,8 @@ fun TextFieldForm(
     trailingIcon: ImageVector? = null,
     onTextChanged: (String) -> Unit,
     keyboardActions: (() -> Unit)? = null,
-    onClickTrailingIcon: (() -> Unit)? = null
-    ) {
-
+    onClickTrailingIcon: (() -> Unit)? = null,
+) {
     var keyboardController: SoftwareKeyboardController? = null
 
     if (keyboardActions != null) {
@@ -55,27 +54,29 @@ fun TextFieldForm(
         label = { Text(text = label) },
         modifier = modifier.fillMaxWidth(),
         keyboardOptions = keyboardOptions,
-        keyboardActions = KeyboardActions(
-            onDone = {
-            if (keyboardActions != null && keyboardController != null) {
-                keyboardController.hide()
-                keyboardActions()
-            }
-        }),
+        keyboardActions =
+            KeyboardActions(
+                onDone = {
+                    if (keyboardActions != null && keyboardController != null) {
+                        keyboardController.hide()
+                        keyboardActions()
+                    }
+                },
+            ),
         isError = isInvalid,
         supportingText = {
-            if (isInvalid){
+            if (isInvalid) {
                 Text(text = supportTextError)
-            } else if(showSupportText){
+            } else if (showSupportText) {
                 Text(text = supportText)
             }
         },
         trailingIcon = {
-          if(trailingIcon != null && onClickTrailingIcon != null && textValue.length > 3){
-              IconButton(onClick = { onClickTrailingIcon() }) {
-                  Icon(imageVector = trailingIcon, contentDescription = "Icon")
-              }
-          }
+            if (trailingIcon != null && onClickTrailingIcon != null && textValue.length > 3) {
+                IconButton(onClick = { onClickTrailingIcon() }) {
+                    Icon(imageVector = trailingIcon, contentDescription = "Icon")
+                }
+            }
         },
         singleLine = oneLine,
         maxLines = maxLines,
@@ -88,21 +89,32 @@ fun Title(textTitle: String) {
 }
 
 @Composable
-fun ImageFromInternet(url: String, description: String? = null, modifier: Modifier){
+fun ImageFromInternet(
+    url: String,
+    description: String? = null,
+    modifier: Modifier,
+) {
     AsyncImage(model = url, contentDescription = description, modifier)
 }
 
 @Composable
-fun ImageFromLocal(uri: Uri, modifier: Modifier){
-    val painter = rememberAsyncImagePainter(
-        ImageRequest.Builder(LocalContext.current)
-            .data(uri)
-            .build()
-    )
+fun ImageFromLocal(
+    uri: Uri,
+    modifier: Modifier,
+) {
+    val painter =
+        rememberAsyncImagePainter(
+            ImageRequest.Builder(LocalContext.current)
+                .data(uri)
+                .build(),
+        )
     Image(
-        painter = painter, contentDescription = "", modifier = modifier
-            .fillMaxWidth()
-            .aspectRatio(16f / 9f)
-            .clip(MaterialTheme.shapes.large)
+        painter = painter,
+        contentDescription = "",
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .aspectRatio(16f / 9f)
+                .clip(MaterialTheme.shapes.large),
     )
 }

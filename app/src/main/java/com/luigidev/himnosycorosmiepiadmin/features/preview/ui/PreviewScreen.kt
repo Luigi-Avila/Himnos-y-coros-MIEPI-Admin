@@ -7,8 +7,10 @@ import androidx.navigation.NavHostController
 import com.luigidev.himnosycorosmiepiadmin.features.preview.domain.states.PreviewUIStates
 
 @Composable
-fun PreviewScreen(navigationController: NavHostController, choirId: String) {
-
+fun PreviewScreen(
+    navigationController: NavHostController,
+    choirId: String,
+) {
     val previewViewModel: PreviewViewModel = hiltViewModel()
 
     when (previewViewModel.previewUIState) {
@@ -24,6 +26,4 @@ fun PreviewScreen(navigationController: NavHostController, choirId: String) {
             Text(text = "Success State")
         }
     }
-
-
 }

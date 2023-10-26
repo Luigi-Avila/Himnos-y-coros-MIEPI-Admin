@@ -9,7 +9,6 @@ import com.luigidev.himnosycorosmiepiadmin.features.home.ui.states.HomeSuccess
 
 @Composable
 fun HomeScreen(navigationController: NavHostController) {
-
     val homeViewModel: HomeViewModel = hiltViewModel()
 
     when (homeViewModel.homeUIState) {
@@ -24,10 +23,8 @@ fun HomeScreen(navigationController: NavHostController) {
         is HomeUIState.Success -> {
             HomeSuccess(
                 navigationController = navigationController,
-                homeViewModel
+                homeViewModel,
             )
         }
     }
-
-
 }

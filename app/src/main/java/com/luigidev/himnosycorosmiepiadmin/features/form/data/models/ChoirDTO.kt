@@ -8,5 +8,5 @@ data class ChoirDTO(
     val localThumbnail: String? = null,
     val storagePath: String? = null,
     val video: String? = null,
-    val choirNumber: Int? = null
+    val choirNumber: Int? = null,
 )

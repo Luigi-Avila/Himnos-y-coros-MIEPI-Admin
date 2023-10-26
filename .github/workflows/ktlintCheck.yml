@@ -2,7 +2,7 @@ name: Ktlint Check
 
 on:
     push:
-        branches: ["main", "development"]
+        branches: ["main", "development", "feat/ktlint"]
     pull_request:
         branches: ["main", "development"]
 
@@ -22,5 +22,3 @@ jobs:
               uses: gradle/gradle-build-action@v2
             - name: Check semantic
               run: ./gradlew ktlintCheck
-            - name: Run format
-              run: ./gradlew ktlintFormat

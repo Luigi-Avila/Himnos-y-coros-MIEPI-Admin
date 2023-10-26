@@ -9,9 +9,12 @@ import androidx.navigation.NavHostController
 import com.luigidev.himnosycorosmiepiadmin.features.form.ui.FormViewModel
 
 @Composable
-fun FormSuccessState(formViewModel: FormViewModel, navigationController: NavHostController) {
+fun FormSuccessState(
+    formViewModel: FormViewModel,
+    navigationController: NavHostController,
+) {
     Dialog(onDismissRequest = {}) {
-        Row() {
+        Row {
             Button(onClick = { formViewModel.goToHome(navigationController) }) {
                 Text(text = "Go to home")
             }
@@ -21,5 +24,3 @@ fun FormSuccessState(formViewModel: FormViewModel, navigationController: NavHost
         }
     }
 }
-
-

@@ -7,5 +7,5 @@ data class ChoirFillOut(
     val thumbnail: String? = null,
     val video: String? = null,
     val choirNumber: Int = 0,
-    val storagePath: String? = null
+    val storagePath: String? = null,
 )

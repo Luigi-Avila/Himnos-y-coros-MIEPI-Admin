@@ -10,5 +10,5 @@ data class Choir(
     val internetThumbnail: String? = null,
     val video: String? = null,
     val choirNumber: Int = 0,
-    val storagePath: String? = null
+    val storagePath: String? = null,
 )

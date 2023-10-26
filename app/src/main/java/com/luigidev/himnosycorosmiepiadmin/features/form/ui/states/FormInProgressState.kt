@@ -18,14 +18,12 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.window.Dialog
 import com.luigidev.himnosycorosmiepiadmin.R
 
-
 @Composable
 fun FormInProgressState(progress: String) {
     var realProgress by remember { mutableStateOf("") }
     realProgress = progress
     LoadingDialog(realProgress)
 }
-
 
 @Composable
 fun LoadingDialog(progress: String) {
@@ -36,7 +34,7 @@ fun LoadingDialog(progress: String) {
                     .fillMaxWidth()
                     .padding(dimensionResource(id = R.dimen.common_default_padding)),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
             ) {
                 Text(text = "Uploading Information", style = MaterialTheme.typography.titleLarge)
                 Text(text = progress, style = MaterialTheme.typography.displayLarge)
@@ -45,5 +43,3 @@ fun LoadingDialog(progress: String) {
         }
     }
 }
-
-

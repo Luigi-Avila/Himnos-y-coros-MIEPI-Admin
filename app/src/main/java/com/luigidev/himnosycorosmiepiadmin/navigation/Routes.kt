@@ -7,9 +7,9 @@ sealed class Routes(val route: String) {
 
     object HomeScreen : Routes("HomeScreen")
 
-    object SplashScreen: Routes("SplashScreen")
+    object SplashScreen : Routes("SplashScreen")
 
-    object PreviewScreen: Routes("PreviewScreen?id={id}"){
+    object PreviewScreen : Routes("PreviewScreen?id={id}") {
         fun createRoute(id: String) = "PreviewScreen?id=$id"
     }
 }

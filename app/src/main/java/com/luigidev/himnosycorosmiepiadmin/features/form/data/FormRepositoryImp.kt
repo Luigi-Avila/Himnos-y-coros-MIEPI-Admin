@@ -7,37 +7,39 @@ import com.luigidev.himnosycorosmiepiadmin.features.form.domain.models.ChoirFill
 import com.luigidev.himnosycorosmiepiadmin.features.form.domain.repository.IFormRepository
 import javax.inject.Inject
 
-class FormRepositoryImp @Inject constructor(private val service: FormService) : IFormRepository {
-    override fun uploadChoir(
-        choir: Choir,
-        uploadingState: (ResultAPI<String>) -> Unit
-    ) = service.uploadChoir(choir, uploadingState)
+class FormRepositoryImp
+    @Inject
+    constructor(private val service: FormService) : IFormRepository {
+        override fun uploadChoir(
+            choir: Choir,
+            uploadingState: (ResultAPI<String>) -> Unit,
+        ) = service.uploadChoir(choir, uploadingState)
 
-    override fun uploadChoirWithImage(
-        choir: Choir,
-        uploadingState: (ResultAPI<String>) -> Unit
-    ) = service.uploadChoirWithImage(choir, uploadingState)
+        override fun uploadChoirWithImage(
+            choir: Choir,
+            uploadingState: (ResultAPI<String>) -> Unit,
+        ) = service.uploadChoirWithImage(choir, uploadingState)
 
-    override fun getChoirById(
-        id: String,
-        resultState: (ResultAPI<ChoirFillOut>) -> Unit
-    ) = service.getChoirById(id, resultState)
+        override fun getChoirById(
+            id: String,
+            resultState: (ResultAPI<ChoirFillOut>) -> Unit,
+        ) = service.getChoirById(id, resultState)
 
-    override fun updateChoir(
-        id: String,
-        choir: Choir,
-        resultState: (ResultAPI<String>) -> Unit
-    ) = service.updateChoir(id, choir, resultState)
+        override fun updateChoir(
+            id: String,
+            choir: Choir,
+            resultState: (ResultAPI<String>) -> Unit,
+        ) = service.updateChoir(id, choir, resultState)
 
-    override fun updateChoirWithImage(
-        id: String,
-        choir: Choir,
-        uploadingState: (ResultAPI<String>) -> Unit
-    ) = service.updateChoirWithImage(id, choir, uploadingState)
+        override fun updateChoirWithImage(
+            id: String,
+            choir: Choir,
+            uploadingState: (ResultAPI<String>) -> Unit,
+        ) = service.updateChoirWithImage(id, choir, uploadingState)
 
-    override fun deleteImageFromStorage(
-        id: String,
-        storagePath: String,
-        resultState: (ResultAPI<String>) -> Unit
-    ) = service.deleteImageFromStorage(id, storagePath, resultState)
-}
+        override fun deleteImageFromStorage(
+            id: String,
+            storagePath: String,
+            resultState: (ResultAPI<String>) -> Unit,
+        ) = service.deleteImageFromStorage(id, storagePath, resultState)
+    }

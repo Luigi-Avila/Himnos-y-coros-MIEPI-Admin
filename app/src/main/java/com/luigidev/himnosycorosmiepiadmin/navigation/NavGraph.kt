@@ -13,7 +13,6 @@ import com.luigidev.himnosycorosmiepiadmin.splash.SplashScreen
 @Composable
 fun SetupNavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Routes.SplashScreen.route) {
-
         composable(Routes.SplashScreen.route) {
             SplashScreen(navController = navController)
         }
@@ -24,24 +23,22 @@ fun SetupNavGraph(navController: NavHostController) {
 
         composable(
             Routes.PreviewScreen.route,
-            arguments = listOf(navArgument("id") { defaultValue = "" })
+            arguments = listOf(navArgument("id") { defaultValue = "" }),
         ) { backStackEntry ->
             PreviewScreen(
                 navigationController = navController,
-                choirId = backStackEntry.arguments?.getString("id").orEmpty()
+                choirId = backStackEntry.arguments?.getString("id").orEmpty(),
             )
-
         }
 
         composable(
             Routes.FormScreen.route,
-            arguments = listOf(navArgument("id") { defaultValue = "" })
+            arguments = listOf(navArgument("id") { defaultValue = "" }),
         ) { backStackEntry ->
             FormScreen(
                 navigationController = navController,
-                choirId = backStackEntry.arguments?.getString("id").orEmpty()
+                choirId = backStackEntry.arguments?.getString("id").orEmpty(),
             )
         }
-
     }
 }

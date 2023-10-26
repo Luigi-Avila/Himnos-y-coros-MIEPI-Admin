@@ -12,14 +12,9 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
+    @Binds
+    abstract fun bindFormRepository(formRepositoryImp: FormRepositoryImp): IFormRepository
 
     @Binds
-    abstract fun bindFormRepository(
-        formRepositoryImp: FormRepositoryImp
-    ): IFormRepository
-
-    @Binds
-    abstract fun bindHomeRepository(
-        homeRepositoryImp: HomeRepositoryImp
-    ): IHomeRepository
+    abstract fun bindHomeRepository(homeRepositoryImp: HomeRepositoryImp): IHomeRepository
 }
